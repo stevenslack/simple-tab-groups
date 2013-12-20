@@ -80,7 +80,9 @@ class S2_Tab_Groups {
 		 */
 		// register the simple tabs post type
 		add_action( 'init', array( $this, 's2_tab_post_type' ) );
-		add_filter( '@TODO', array( $this, 'filter_method_name' ) );
+
+		// add the shortcode
+	    add_shortcode( 'simple-tab-groups', array( $this, 's2_tab_shortcode' ) );
 
 	}
 
@@ -267,7 +269,12 @@ class S2_Tab_Groups {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_slug . '-plugin-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
+		global $post;
+
+		// if( has_shortcode( $post->post_content, 'simple-tab-groups') ) {
+		//	wp_enqueue_style( $this->plugin_slug . '-plugin-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
+		// }
+		
 	}
 
 	/**
@@ -276,7 +283,7 @@ class S2_Tab_Groups {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( $this->plugin_slug . '-plugin-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION );
+		//wp_enqueue_script( $this->plugin_slug . '-plugin-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION );
 	}
 
 	/**
@@ -352,20 +359,98 @@ class S2_Tab_Groups {
 	    ); // register taxonomy s2_tab_group
 
 	
-	}
+	} // end register post type
+
+	public function s2_tab_shortcode ( $atts ) {
+		// USAGE: [simple-tab-groups group="Tab Group Name or Slug"] 
+		wp_enqueue_style( $this->plugin_slug . '-plugin-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
+		/** 
+		 * Conditionally load javascript inside the shortcode handler 
+		 */
+		wp_enqueue_script( $this->plugin_slug . '-plugin-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
+		
+		// One Attribute group which the user will input the queried group with this attribute
+		extract( shortcode_atts(
+			array(
+				'group' => '',
+			), $atts )
+		);
+
+		// Checks if the user has entered a tab group attribute
+		if ( term_exists( $group, 's2_tab_group') ) {
+
+			$args = array( 
+			'post_type' => 's2_simple_tabs',
+			'orderby' => 'menu_order',
+			'order' => 'ASC',
+			'tax_query' => array(                     
+			    'relation' 	=> 'AND',                   
+				      array(
+				        'taxonomy' 			=> 's2_tab_group',               
+				        'field' 			=> 'slug',                    
+				        'terms' 			=> $group,
+				        'include_children' 	=> false,
+				        'operator' 			=> 'IN'
+				      ),
+			      ) // end tax query
+
+			);	// end $args array
+
+		// if no attribute is set return all tabs
+		} else {
+			$args = array( 
+				'post_type' => 's2_simple_tabs',
+				'orderby' 	=> 'menu_order',
+				'order' 	=> 'ASC'
+			);	
+		}
+
+		$the_query = new WP_Query( $args );	  
+
+		$tabs = ''; // initialize the output variable
+
+		
+		$tabs .= '<div id="s2-tab-groups"><ul class="tab-nav">';
+
+			// Run the loop first to creat an unordered list of tab pages with the queried group
+			if ( $the_query->have_posts() ) :
+				while ( $the_query->have_posts() ) : $the_query->the_post();
+				
+			        $tabs .= sprintf( ( '<li><a href="#tab-%1$s">%2$s</a></li>' ),
+			        		$id = get_the_ID(),
+							$title = get_the_title()
+						);
+
+				endwhile; 
+			endif;	
+
+			$tabs .= '</ul>';
+
+			/**
+			 * Run the loop a second time to return the content. It is necessary in this case
+			 * to uncouple the titles and the content to display properly. If only one query was run
+			 * each tab section would stack on top of each other. Got a better idea? Let me know.
+			 */
+
+			if ( $the_query->have_posts() ) :
+				while ( $the_query->have_posts() ) : $the_query->the_post();
+
+					$tabs .= sprintf( ( '<div id="tab-%1$s" class="tab-content">%2$s</div>' ),
+							$id = get_the_ID(),
+							apply_filters( 'the_content', get_the_content() ) // wpautop makes sure the tab content contains the formatting in the TinyMCE WYSIWYG editor									
+						);
+
+				endwhile; 
+			endif;	
+
+			wp_reset_postdata();
+
+		$tabs .= '</div>'; // end #s2-tab-groups
+
+		return $tabs; //Return the HTML
+
+	} // end s2 tab shortcode function
 	
 
-	/**
-	 * NOTE:  Filters are points of execution in which WordPress modifies data
-	 *        before saving it or sending it to the browser.
-	 *
-	 *        Filters: http://codex.wordpress.org/Plugin_API#Filters
-	 *        Reference:  http://codex.wordpress.org/Plugin_API/Filter_Reference
-	 *
-	 * @since    1.0.0
-	 */
-	public function filter_method_name() {
-		// @TODO: Define your filter hook callback here
-	}
 
 }
