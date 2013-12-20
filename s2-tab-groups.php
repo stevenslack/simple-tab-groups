@@ -1,23 +1,20 @@
 <?php
 /**
- * The WordPress Plugin Boilerplate.
- *
- * A foundation off of which to build well-documented WordPress plugins that
- * also follow WordPress Coding Standards and PHP best practices.
+ * Simple Tab Groups
  *
  * @package   S2_Tab_Groups
- * @author    Your Name <email@example.com>
+ * @author    Steven Slack <steven@s2webpress.com>
  * @license   GPL-2.0+
- * @link      http://example.com
- * @copyright 2013 Your Name or Company Name
+ * @link      http://s2webpress.com/plugins/s2-tab-groups
+ * @copyright 2013 S2 Web LLC
  *
  * @wordpress-plugin
- * Plugin Name:       @TODO
- * Plugin URI:        @TODO
- * Description:       @TODO
+ * Plugin Name:       Simple Tab Groups
+ * Plugin URI:        s2webpress.com/plugins/simple-tab-groups
+ * Description:       Create tabs and group them together in categories. Display a tab group on any post or page without using any confusing shortcode functions. Pull in content from any category or taxonomy into a tab dynamically. Minimally styled to work with your theme. 
  * Version:           1.0.0
- * Author:            @TODO
- * Author URI:        @TODO
+ * Author:            S2 Web
+ * Author URI:        http://s2webpress.com
  * Text Domain:       s2-tab-groups-locale
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt

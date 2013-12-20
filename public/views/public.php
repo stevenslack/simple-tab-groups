@@ -6,10 +6,10 @@
  * frontend of the theme when the plugin is activated.
  *
  * @package   S2_Tab_Groups
- * @author    Your Name <email@example.com>
+ * @author    Steven Slack <steven@s2webpress.com>
  * @license   GPL-2.0+
- * @link      http://example.com
- * @copyright 2013 Your Name or Company Name
+ * @link      http://s2webpress.com
+ * @copyright 2013 S2 Web LLC
  */
 ?>
 

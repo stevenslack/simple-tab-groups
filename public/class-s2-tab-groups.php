@@ -3,10 +3,10 @@
  * Plugin Name.
  *
  * @package   S2_Tab_Groups
- * @author    Your Name <email@example.com>
+ * @author    Steven Slack <steven@s2webpress.com>
  * @license   GPL-2.0+
- * @link      http://example.com
- * @copyright 2013 Your Name or Company Name
+ * @link      http://s2webpress.com
+ * @copyright 2013 S2 Web LLC
  */
 
 /**
@@ -78,7 +78,8 @@ class S2_Tab_Groups {
 		/* Define custom functionality.
 		 * Refer To http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
 		 */
-		add_action( '@TODO', array( $this, 'action_method_name' ) );
+		// register the simple tabs post type
+		add_action( 'init', array( $this, 's2_tab_post_type' ) );
 		add_filter( '@TODO', array( $this, 'filter_method_name' ) );
 
 	}
@@ -287,9 +288,72 @@ class S2_Tab_Groups {
 	 *
 	 * @since    1.0.0
 	 */
-	public function action_method_name() {
-		// @TODO: Define your action hook callback here
+	public function s2_tab_post_type() {
+		
+    	register_post_type( 's2_simple_tabs',
+
+			array('labels' => array(
+
+				'name' 					=> __( 'Tabs', $this->plugin_slug ), 
+				'singular_name' 		=> __( 'Tab', $this->plugin_slug ), 
+				'all_items' 			=> __( 'All Tabs', $this->plugin_slug ), 
+				'add_new' 				=> __( 'Add New Tab', $this->plugin_slug ), 
+				'add_new_item' 			=> __( 'Add New Tab', $this->plugin_slug ),
+				'edit' 					=> __( 'Edit Tab Content', $this->plugin_slug ), 
+				'edit_item' 			=> __( 'Edit Tab Content', $this->plugin_slug ), 
+				'new_item' 				=> __( 'New Tab', $this->plugin_slug ), 
+				'view_item' 			=> __( 'View Tab Content', $this->plugin_slug ), 
+				'search_items' 			=> __( 'Search Tabs', $this->plugin_slug ), 
+				'not_found' 			=> __( 'Nothing found. Try creating a new tab.', $this->plugin_slug ), 
+				'not_found_in_trash' 	=> __( 'Nothing found in Trash', $this->plugin_slug ),
+				'parent_item_colon' 	=> ''
+				), 
+
+				'description' 			=> __( 'This is a tab', $this->plugin_slug ), /* Custom Type Description */
+				'public' 				=> true,
+				'publicly_queryable' 	=> true,
+				'exclude_from_search' 	=> false,
+				'show_ui' 				=> true,
+				'show_in_nav_menus'		=> false,
+				'query_var'			 	=> true,
+				'menu_position' 		=> 100,
+				'menu_icon'				=>'dashicons-format-gallery',	
+				'rewrite'				=> array( 'slug' => 'tabs', 'with_front' => false ), 	
+				'has_archive' 			=> 's2_simple_tabs', 	
+				'capability_type' 		=> 'page',
+				'hierarchical' 			=> false,
+				'supports' 				=> array( 'title', 'editor', 'page-attributes'  ),
+				//'register_meta_box_cb'	=> array( $this, 's2_tabs_meta_box_callback' ) // call to register meta box
+		 	) 	
+
+		); /* end of register post type */
+
+		register_taxonomy( 's2_tab_group', 
+	    	array('s2_simple_tabs'), 
+		    	array('hierarchical' 		=> true,            
+		    			'labels' 			=> array(
+		    			'name' 				=> __( 'Tab Groups', $this->plugin_slug ),
+		    			'singular_name' 	=> __( 'Tab Group', $this->plugin_slug ),
+		    			'search_items'		=> __( 'Search Tab Groups', $this->plugin_slug ), 
+		    			'all_items' 		=> __( 'All Tab Groups', $this->plugin_slug ), 
+		    			'parent_item' 		=> __( 'Parent Tab Group', $this->plugin_slug ),
+		    			'parent_item_colon' => __( 'Parent Tab Group:', $this->plugin_slug ), 
+		    			'edit_item' 		=> __( 'Edit Tab Group', $this->plugin_slug ), 
+		    			'update_item' 		=> __( 'Update Tab Group', $this->plugin_slug ), 
+		    			'add_new_item' 		=> __( 'Add New Tab Group', $this->plugin_slug ), 
+		    			'new_item_name' 	=> __( 'New Tab Group Name', $this->plugin_slug ) 
+		    		),
+		    	'show_admin_column' => true,
+	    		'show_ui' 			=> true,
+	    		'show_in_nav_menus'	=> false,
+	    		'query_var' 		=> true,
+	    		'rewrite' 			=> array( 'slug' => 'tabs' )
+	    	)
+	    ); // register taxonomy s2_tab_group
+
+	
 	}
+	
 
 	/**
 	 * NOTE:  Filters are points of execution in which WordPress modifies data
