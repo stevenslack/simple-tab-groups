@@ -80,9 +80,6 @@ class S2_Tab_Groups_Admin {
 		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_slug . '.php' );
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
-		// add the meta box for the tabs post type
-	    add_action( 'add_meta_boxes', array( $this, 's2_tabs_meta_box_callback' ) );
-
 		/*
 		 * Define custom functionality.
 		 *
@@ -253,57 +250,6 @@ class S2_Tab_Groups_Admin {
 	 */
 	public function filter_method_name() {
 		// @TODO: Define your filter hook callback here
-	}
-
-	/**
-	 * Registers the Meta Box from the register post type function
-	 * Tab Display Options
-	 *
-	 * @since 	1.0.0
-	 */
-	public function s2_tabs_meta_box_callback() {
-		// register side box
-		add_meta_box( 
-			's2-tab-meta-box', 								// HTML 'id' attribute of the edit screen section
-			__( 'Tab Display Options', $this->plugin_slug ), //Title of the edit screen section, visible to user
-			array($this, 's2_tab_meta_box'), 				// Callback | Function that prints out the HTML for the edit screen section.
-			's2_simple_tabs', 								// The type of Write screen on which to show the edit screen section ('post', 'page', 'dashboard', 'link', 'attachment' or 'custom_post_type' where custom_post_type is the custom post type slug)
-			'normal', 										// The part of the page where the edit screen section should be shown ('normal', 'advanced', or 'side'). 
-			'default' 										// The priority within the context where the boxes should show ('high', 'core', 'default' or 'low')
-		);
-	}
-
-	public function s2_tab_meta_box( $post ) {
-		wp_nonce_field( basename( __FILE__ ), 's2_tab_nonce' );
-		$s2_tab_stored_meta = get_post_meta( $post->ID );
-		?>
-
-		<p>
-		    <span class="prfx-row-title"><?php _e( 'Example Radio Buttons', $this->plugin_slug )?></span>
-		    <div class="prfx-row-content">
-		        <label for="meta-radio-one">
-		            <input type="radio" name="meta-radio" id="meta-radio-one" value="radio-one" <?php if ( isset ( $s2_tab_stored_meta['meta-radio'] ) ) checked( $s2_tab_stored_meta['meta-radio'][0], 'radio-one' ); ?>>
-		            <?php _e( 'Radio Option #1', $this->plugin_slug )?>
-		        </label>
-		        <label for="meta-radio-two">
-		            <input type="radio" name="meta-radio" id="meta-radio-two" value="radio-two" <?php if ( isset ( $s2_tab_stored_meta['meta-radio'] ) ) checked( $s2_tab_stored_meta['meta-radio'][0], 'radio-two' ); ?>>
-		            <?php _e( 'Radio Option #2', $this->plugin_slug )?>
-		        </label>
-		    </div>
-		</p>
-		<p>
-		    <label for="meta-select" class="prfx-row-title"><?php _e( 'Example Select Input', $this->plugin_slug )?></label>
-		    <select name="meta-select" id="meta-select">
-		       
-				<?php $taxonomies = get_taxonomies( '', 'objects' ); ?>
-		
-				<?php foreach ( $taxonomies as $taxonomy ) { ?>
-					<option value="<?php echo $taxonomy->name; ?>" <?php if ( isset ( $s2_tab_stored_meta['meta-select'] ) ) selected( $s2_tab_stored_meta['meta-select'][0], $taxonomy->name ); ?>><?php echo $taxonomy->labels->name; ?></option>';
-				<?php }  ?>
-		    </select>
-		</p>
-
-		<?php
 	}
 
 }
