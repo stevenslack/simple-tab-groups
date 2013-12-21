@@ -63,6 +63,10 @@ add_action( 'plugins_loaded', array( 'S2_Tab_Groups', 'get_instance' ) );
  * Dashboard and Administrative Functionality
  *----------------------------------------------------------------------------*/
 
+
+require_once( plugin_dir_path( __FILE__ ) . 'customizer/class-customizer.php' );
+add_action( 'plugins_loaded', array( 'S2_Tab_Customizer', 'get_instance' ) );
+
 /*
  * @TODO:
  *
@@ -85,3 +89,4 @@ if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 	add_action( 'plugins_loaded', array( 'S2_Tab_Groups_Admin', 'get_instance' ) );
 
 }
+

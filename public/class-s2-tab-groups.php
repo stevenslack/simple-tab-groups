@@ -272,7 +272,7 @@ class S2_Tab_Groups {
 		global $post;
 
 		// if( has_shortcode( $post->post_content, 'simple-tab-groups') ) {
-		//	wp_enqueue_style( $this->plugin_slug . '-plugin-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
+		//	wp_enqueue_style( $this->plugin_slug . '-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
 		// }
 		
 	}
@@ -283,7 +283,7 @@ class S2_Tab_Groups {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		//wp_enqueue_script( $this->plugin_slug . '-plugin-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION );
+		//wp_enqueue_script( $this->plugin_slug . '-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION );
 	}
 
 	/**
@@ -362,12 +362,14 @@ class S2_Tab_Groups {
 	} // end register post type
 
 	public function s2_tab_shortcode ( $atts ) {
-		// USAGE: [simple-tab-groups group="Tab Group Name or Slug"] 
-		wp_enqueue_style( $this->plugin_slug . '-plugin-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
+		// USAGE: [simple-tab-groups group="Tab Group Name or Slug"]
+		// 
+		wp_enqueue_style( $this->plugin_slug . '-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
+
 		/** 
 		 * Conditionally load javascript inside the shortcode handler 
 		 */
-		wp_enqueue_script( $this->plugin_slug . '-plugin-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
+		wp_enqueue_script( $this->plugin_slug . '-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
 		
 		// One Attribute group which the user will input the queried group with this attribute
 		extract( shortcode_atts(
@@ -434,11 +436,19 @@ class S2_Tab_Groups {
 
 			if ( $the_query->have_posts() ) :
 				while ( $the_query->have_posts() ) : $the_query->the_post();
-
-					$tabs .= sprintf( ( '<div id="tab-%1$s" class="tab-content">%2$s</div>' ),
+					$tabs .= sprintf( ( '<div id="tab-%1$s" class="tab-content">%2$s' ),
 							$id = get_the_ID(),
 							apply_filters( 'the_content', get_the_content() ) // wpautop makes sure the tab content contains the formatting in the TinyMCE WYSIWYG editor									
 						);
+
+					if ( current_user_can( 'edit_pages' ) ) {
+						$edit_tab = get_edit_post_link();
+						// display an edit tab link
+						$tabs .= '<a href="'. $edit_tab .'" class="edit-tabs">'. __('edit this tab', $this->plugin_slug ) .'</a>';
+						
+					} // end if current user can edit pages
+
+					$tabs .= '</div>'; // end .tab-content
 
 				endwhile; 
 			endif;	
