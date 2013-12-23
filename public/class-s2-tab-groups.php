@@ -412,7 +412,7 @@ class S2_Tab_Groups {
 		$tabs = ''; // initialize the output variable
 
 		
-		$tabs .= '<div id="s2-tab-groups"><ul class="tab-nav">';
+		$tabs .= '<div id="s2-tab-groups"><ul class="s2-tab-nav">';
 
 			// Run the loop first to creat an unordered list of tab pages with the queried group
 			if ( $the_query->have_posts() ) :

@@ -3,7 +3,7 @@
 
 	$(function () {
 
-		$('ul.tab-nav').each(function(){
+		$('ul.s2-tab-nav').each(function(){
             // For each set of tabs, we want to keep track of
             // which tab is active and it's associated content
             var $active, $content, $links = $(this).find('a');

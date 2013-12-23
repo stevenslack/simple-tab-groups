@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name.
+ * Simple Tab Groups.
  *
  * @package   S2_Tab_Customizer
  * @author    Steven Slack <steven@s2webpress.com>
@@ -10,16 +10,10 @@
  */
 
 /**
- * Plugin class. This class should ideally be used to work with the
- * administrative side of the WordPress site.
- *
- * If you're interested in introducing public-facing
- * functionality, then refer to `class-s2-tab-groups.php`
- *
- * @TODO: Rename this class to a proper name for your plugin.
+ * S2_Tab_Customizer. This class handles the style of the tabs using the theme customizer.
  *
  * @package S2_Tab_Customizer
- * @author  Your Name <email@example.com>
+ * @author  Steven Slack <steven@s2webpress.com>
  */
 
 
@@ -44,8 +38,7 @@ class S2_Tab_Customizer {
 	protected $plugin_screen_hook_suffix = null;
 
 	/**
-	 * Initialize the plugin by loading admin scripts & styles and adding a
-	 * settings page and menu.
+	 * Register the theme customizer and theme customizer preview scripts and styles
 	 *
 	 * @since     1.0.0
 	 */
@@ -95,7 +88,8 @@ class S2_Tab_Customizer {
 	            'priority' 			=> 300,
 	        )
 	    );
-
+		
+		// Tab Background Color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_bg]',
 	        array(
@@ -113,11 +107,13 @@ class S2_Tab_Customizer {
 	            's2_tab_styles[tab_bg]',
 	            array(
 	                'label'      => __( 'Tab Background', $this->plugin_slug ),
-	                'section'    => 's2_tab_styles'
+	                'section'    => 's2_tab_styles',
+	                'priority' 	 => 0,
 	            )
 	        )
 	    );
-
+		
+		// Tab text color																														
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_color]',
 	        array(
@@ -135,11 +131,13 @@ class S2_Tab_Customizer {
 	            's2_tab_styles[tab_color]',
 	            array(
 	                'label'      => __( 'Tab text color', $this->plugin_slug ),
-	                'section'    => 's2_tab_styles'
+	                'section'    => 's2_tab_styles',
+	                'priority' 	 => 1,
 	            )
 	        )
 	    );
-
+		
+		// Tab active state background color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_active]',
 	        array(
@@ -157,11 +155,13 @@ class S2_Tab_Customizer {
 	            's2_tab_styles[tab_active]',
 	            array(
 	                'label'      => __( 'Active tab background', $this->plugin_slug ),
-	                'section'    => 's2_tab_styles'
+	                'section'    => 's2_tab_styles',
+	                'priority' 	 => 2,
 	            )
 	        )
 	    );
-
+		
+		// Tab active state text color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_active_color]',
 	        array(
@@ -179,11 +179,13 @@ class S2_Tab_Customizer {
 	            's2_tab_styles[tab_active_color]',
 	            array(
 	                'label'      => __( 'Active tab text color', $this->plugin_slug ),
-	                'section'    => 's2_tab_styles'
+	                'section'    => 's2_tab_styles',
+	                'priority' 	 => 3,
 	            )
 	        )
 	    );
-
+		
+		// Tab hover state background color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_hover_bg]',
 	        array(
@@ -201,11 +203,13 @@ class S2_Tab_Customizer {
 	            's2_tab_styles[tab_hover_bg]',
 	            array(
 	                'label'      => __( 'Tab hover background', $this->plugin_slug ),
-	                'section'    => 's2_tab_styles'
+	                'section'    => 's2_tab_styles',
+	                'priority' 	 => 4,
 	            )
 	        )
 	    );
-
+		
+		// Tab hover state text color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_hover_color]',
 	        array(
@@ -223,11 +227,13 @@ class S2_Tab_Customizer {
 	            's2_tab_styles[tab_hover_color]',
 	            array(
 	                'label'      => __( 'Tab hover text color', $this->plugin_slug ),
-	                'section'    => 's2_tab_styles'
+	                'section'    => 's2_tab_styles',
+	                'priority' 	 => 5,
 	            )
 	        )
 	    );
-
+		
+		// Tab content background color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_content_bg]',
 	        array(
@@ -245,11 +251,13 @@ class S2_Tab_Customizer {
 	            's2_tab_styles[tab_content_bg]',
 	            array(
 	                'label'      => __( 'Tab content background', $this->plugin_slug ),
-	                'section'    => 's2_tab_styles'
+	                'section'    => 's2_tab_styles',
+	                'priority' 	 => 6,
 	            )
 	        )
 	    );
-
+		
+		// Tab Content text color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_content_color]',
 	        array(
@@ -267,32 +275,71 @@ class S2_Tab_Customizer {
 	            's2_tab_styles[tab_content_color]',
 	            array(
 	                'label'      => __( 'Tab content text color', $this->plugin_slug ),
-	                'section'    => 's2_tab_styles'
+	                'section'    => 's2_tab_styles',
+	                'priority' 	 => 7,
 	            )
 	        )
 	    );
 
+		// Tab Content text color
+	    $wp_customize->add_setting(
+	        'tab_rounded',
+	        array(
+				'default'              => '',
+				'transport'            => 'postMessage'
+	        )
+	    );
+ 
+	    $wp_customize->add_control(
+	            'tab_rounded',
+	            array(
+	                'label'      => __( 'Display Rounded corners on tabs?', $this->plugin_slug ),
+	                'section'    => 's2_tab_styles',
+	                'type'    	 => 'checkbox',
+	                'priority' 	 => 8,
+	            )
+	    );
+
 	} // end s2_tab_color_custom
 
+
+	/**
+	 * [s2_tab_customizer_styles description]
+	 * @return styles in the header using wp_head
+	 */
 	public function s2_tab_customizer_styles() {
 
 		global $post;
 
+		// get the options for the tab styles. This method is used instead of the theme_mod because we are 
+		// using this in a plugin.
 		$tab_styles = get_option( 's2_tab_styles' );
 
+		// get rounded corner checkbox
+		$tab_rounded = get_theme_mod( 'tab_rounded' );
+
+		// only return these styles if the page has the shortcode in the content
 		if( has_shortcode( $post->post_content, 'simple-tab-groups') ) {
 
 	    ?>
 	    <style type="text/css" id="custom-tab-styles">
-	        #s2-tab-groups .tab-nav li a { 
+	        #s2-tab-groups .s2-tab-nav li a { 
 	        	<?php if ( ! empty ( $tab_styles['tab_bg'] ) ) {
 	        		echo 'background-color: #' . $tab_styles['tab_bg'] . ';'; 
 	        	}
 	        	if ( ! empty ( $tab_styles['tab_color'] ) ) {
 	        		echo 'color: #' . $tab_styles['tab_color'] . ';';
-	        	} ?>
+	        	}
+
+				if( isset( $tab_rounded ) && $tab_rounded == 1 ) {
+					echo 'border-radius: 0;';
+				} else {
+					echo 'border-radius: 4px 4px 0 0;';
+				}
+			    
+	        	?>
 	        }
-	        #s2-tab-groups .tab-nav li a.active {
+	        #s2-tab-groups .s2-tab-nav li a.active {
 	        	<?php if ( ! empty ( $tab_styles['tab_active'] ) ) {
 	        		echo 'background-color: #' . $tab_styles['tab_active'] . ';'; 
 	        	}
@@ -300,9 +347,9 @@ class S2_Tab_Customizer {
 	        		echo 'color: #' . $tab_styles['tab_active_color'] . ';';
 	        	} ?>
 	        }
-	        #s2-tab-groups .tab-nav li a:hover {
+	        #s2-tab-groups .s2-tab-nav li a:hover {
 	        	<?php if ( ! empty ( $tab_styles['tab_hover_bg'] ) ) {
-	        		echo 'background-color: #' . $tab_styles['tab_hover_bg'] . ';'; 
+	        		echo 'background-color: #' . $tab_styles['tab_hover_bg'] . ';';
 	        	}
 	        	if ( ! empty ( $tab_styles['tab_hover_color'] ) ) {
 	        		echo 'color: #' . $tab_styles['tab_hover_color'] . ';';
@@ -322,8 +369,10 @@ class S2_Tab_Customizer {
 		}
 	}
 
-
-
+	/**
+	 * [s2_tab_customizer_preview_js description]
+	 * @return [type] [description]
+	 */
 	public function s2_tab_customizer_preview_js() {
 
 		wp_enqueue_script( $this->plugin_slug . '-customizer-script', plugins_url( 'js/customizer.js', __FILE__ ), array( 'jquery', 'customize-preview' ), S2_Tab_Groups::VERSION, true );
