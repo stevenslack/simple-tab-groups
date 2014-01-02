@@ -9,6 +9,7 @@
  * @copyright 2013 S2 Web LLC
  */
 
+
 /**
  * S2_Tab_Customizer. This class handles the style of the tabs using the theme customizer.
  *
@@ -93,7 +94,7 @@ class S2_Tab_Customizer {
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_bg]',
 	        array(
-				'default'              => '',
+				'default'              => '#f1f1f1',
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
@@ -117,7 +118,7 @@ class S2_Tab_Customizer {
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_color]',
 	        array(
-				'default'              => '',
+				'default'              => '#A5A5A5',
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
@@ -141,7 +142,7 @@ class S2_Tab_Customizer {
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_active]',
 	        array(
-				'default'              => '',
+				'default'              => '#DBDBDB',
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
@@ -165,7 +166,7 @@ class S2_Tab_Customizer {
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_active_color]',
 	        array(
-				'default'              => '',
+				'default'              => '#6D6D6D',
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
@@ -189,7 +190,7 @@ class S2_Tab_Customizer {
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_hover_bg]',
 	        array(
-				'default'              => '',
+				'default'              => '#CFCFCF',
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
@@ -213,7 +214,7 @@ class S2_Tab_Customizer {
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_hover_color]',
 	        array(
-				'default'              => '',
+				'default'              => '#4D4D4D',
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
@@ -250,7 +251,7 @@ class S2_Tab_Customizer {
 	            $wp_customize,
 	            's2_tab_styles[tab_content_bg]',
 	            array(
-	                'label'      => __( 'Tab content background', $this->plugin_slug ),
+	                'label'      => __( 'Tab content background color', $this->plugin_slug ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 6,
 	            )
@@ -281,11 +282,36 @@ class S2_Tab_Customizer {
 	        )
 	    );
 
-		// Tab Content text color
+	    // Tab Content border color
+	    $wp_customize->add_setting(
+	        's2_tab_styles[tab_content_border_color]',
+	        array(
+				'default'              => '#f1f1f1',
+				'type'                 => 'option',
+				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
+				'sanitize_js_callback' => 'maybe_hash_hex_color',
+				'transport'            => 'postMessage'
+	        )
+	    );
+ 
+ 		
+	    $wp_customize->add_control(
+	        new WP_Customize_Color_Control(
+	            $wp_customize,
+	            's2_tab_styles[tab_content_border_color]',
+	            array(
+	                'label'      => __( 'Tab content area border color', $this->plugin_slug ),
+	                'section'    => 's2_tab_styles',
+	                'priority' 	 => 8,
+	            )
+	        )
+	    );
+
+		// Display borders on tabs?
 	    $wp_customize->add_setting(
 	        'tab_rounded',
 	        array(
-				'default'              => '',
+				'default'              => 1,
 				'transport'            => 'postMessage'
 	        )
 	    );
@@ -296,9 +322,11 @@ class S2_Tab_Customizer {
 	                'label'      => __( 'Display Rounded corners on tabs?', $this->plugin_slug ),
 	                'section'    => 's2_tab_styles',
 	                'type'    	 => 'checkbox',
-	                'priority' 	 => 8,
+	                'priority' 	 => 9,
 	            )
 	    );
+
+
 
 	} // end s2_tab_color_custom
 
@@ -319,7 +347,7 @@ class S2_Tab_Customizer {
 		$tab_rounded = get_theme_mod( 'tab_rounded' );
 
 		// only return these styles if the page has the shortcode in the content
-		if( has_shortcode( $post->post_content, 'simple-tab-groups') ) {
+		if( has_shortcode( $post->post_content, 'simple-tab-groups') || is_home() ) {
 
 	    ?>
 	    <style type="text/css" id="custom-tab-styles">
@@ -332,9 +360,9 @@ class S2_Tab_Customizer {
 	        	}
 
 				if( isset( $tab_rounded ) && $tab_rounded == 1 ) {
-					echo 'border-radius: 0;';
-				} else {
 					echo 'border-radius: 4px 4px 0 0;';
+				} else {
+					echo 'border-radius: 0;';
 				}
 			    
 	        	?>
@@ -361,6 +389,9 @@ class S2_Tab_Customizer {
 	        	}
 	        	if ( ! empty ( $tab_styles['tab_content_color'] ) ) {
 	        		echo 'color: #' . $tab_styles['tab_content_color'] . ';';
+	        	}
+	        	if ( ! empty ( $tab_styles['tab_content_border_color'] ) ) {
+	        		echo 'border-color: #' . $tab_styles['tab_content_border_color'] . ';';
 	        	} ?>
 	        }
 	    </style>
@@ -380,3 +411,10 @@ class S2_Tab_Customizer {
 	} // s2_tab_customizer_preview
 
 }
+
+
+
+
+
+    
+

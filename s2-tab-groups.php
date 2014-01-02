@@ -70,9 +70,6 @@ add_action( 'plugins_loaded', array( 'S2_Tab_Customizer', 'get_instance' ) );
 /*
  * @TODO:
  *
- * - replace `class-plugin-admin.php` with the name of the plugin's admin file
- * - replace S2_Tab_Groups_Admin with the name of the class defined in
- *   `class-s2-tab-groups-admin.php`
  *
  * If you want to include Ajax within the dashboard, change the following
  * conditional to:
@@ -89,4 +86,3 @@ if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 	add_action( 'plugins_loaded', array( 'S2_Tab_Groups_Admin', 'get_instance' ) );
 
 }
-

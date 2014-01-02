@@ -46,6 +46,11 @@
 	        $('.tab-content').css('color', to );
 	    });
 	});
+	wp.customize('s2_tab_styles[tab_content_border_color]',function( value ) {
+	    value.bind(function(to) {
+	        $('.tab-content').css('border-color', to );
+	    });
+	});
 
 	wp.customize('tab_rounded',function( value ) {
 	    value.bind(function(to) {

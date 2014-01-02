@@ -1,1 +1,35 @@
-/* This stylesheet is used to style the admin option form of the plugin. */
+.wp_themeSkin span.mce_s2_tab_button:before {
+	content: "\f318";
+}
+
+.add-tab-group .dashicons-category {
+	padding-top: 0.25em;
+	padding-right: 0.3em;
+	color: #888;
+}
+
+#TB_window a.insert-all-tabs {
+	color: #fff;
+}
+
+.s2-tab-modal .button-secondary {
+	margin:0 0.4em;
+}
+
+.s2-tab-modal .button-primary {
+	margin: 0 0.4em 0 0;
+}
+
+.tab-notice {
+	background: #fff;
+	padding: 1px 12px;
+	border: 0;
+	border-left: 4px solid #dd3d36;
+	-webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+}
+
+.tab-notice p {
+	margin: .5em 0;
+	padding: 2px;
+}

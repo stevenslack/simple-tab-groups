@@ -90,6 +90,15 @@ class S2_Tab_Groups_Admin {
 		 */
 		// add dashicon to admin header
 		add_action( 'admin_head', array( $this, 'add_dashicon_style' ) );
+		
+		// init process for button control
+		// add_action( 'init', array( $this, 's2_simple_tabs_shortcode_button' ) );
+
+		// Add a button next to the media uploader
+		add_action( 'media_buttons', array( $this, 'add_my_custom_button' ), 11 );
+
+		// Add Content to modal window
+		add_action( 'admin_footer',  array( $this, 'add_inline_popup_content' ) );
 
 	}
 
@@ -137,7 +146,7 @@ class S2_Tab_Groups_Admin {
 		}
 
 		$screen = get_current_screen();
-		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
+		if ( $screen->base == 'post' ) {
 			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), S2_Tab_Groups::VERSION );
 		}
 
@@ -161,7 +170,7 @@ class S2_Tab_Groups_Admin {
 		}
 
 		$screen = get_current_screen();
-		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
+		if ( $screen->base == 'post' ) {
 			wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array( 'jquery' ), S2_Tab_Groups::VERSION );
 		}
 
@@ -225,6 +234,7 @@ class S2_Tab_Groups_Admin {
 
 	/**
 	 * NOTE:     Adds dashicon to menu icon
+	 * Icon used is the category icon which looks like a tab
 	 *
 	 * @since    1.0.0
 	 */
@@ -240,4 +250,58 @@ class S2_Tab_Groups_Admin {
 		<?php
 	}
 
-}
+
+	/**
+	 * Adds a button next to the add media button in the TinyMCE editor
+	 * @param [type] $context [description]
+	 */
+	public function add_my_custom_button() {
+
+		$screen = get_current_screen();
+		if ( $screen->post_type != 's2_simple_tabs' ) {
+
+			add_thickbox();
+			//append the icon
+			$context = '<a title="' . __( 'Add Tab Groups' , $this->plugin_slug ) . '" href="#TB_inline?width=auto&inlineId=popup_container" class="thickbox button add-tab-group"><span class="dashicons dashicons-category"></span>' . __( 'Add Tabs' , $this->plugin_slug ) . '</a>';
+
+			echo $context;
+
+		}
+	}
+
+	public function add_inline_popup_content() {
+
+		$tab_groups = get_terms( 's2_tab_group' );
+		$count = count( $tab_groups );
+
+			echo '<div id="popup_container" style="display:none;">';
+			echo '<div class="s2-tab-modal">';
+			echo '<h2>' . __( 'Choose a tab group', $this->plugin_slug ) . '</h2>';
+			echo '<p>' . __( 'Select which group of tabs you would like to display in the post or page:', $this->plugin_slug ) . '</p>';
+
+		 if ( $count > 0 ){
+		    echo '<select id="s2-tab-select">
+		    <option value="">&#45;&#45;' . __( 'Select a tab group' , $this->plugin_slug ) . '&#45;&#45;</option>
+		    <option value="[simple-tab-groups]">' . __( 'All Tabs' , $this->plugin_slug ) . '</option>';
+			foreach ( $tab_groups as $tab_group ) {
+
+				$tab_group_list .= '<option value="[simple-tab-groups group=&quot;' . $tab_group->slug .'&quot;]">' . $tab_group->name . '</option>';
+				
+			}
+		    echo $tab_group_list;
+		    echo '</select>';
+		    echo '<p><a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a></p>';
+		 } else {
+		 	// display an insert shortcode button
+		 	echo '<div id="notice" class="tab-notice"><p>' . __( 'You have not assigned any tabs to a group.', $this->plugin_slug ) . '</p></div>';
+		 	echo '<p><a href="#" class="insert-all-tabs button-primary">' . __( 'Insert all tabs' , $this->plugin_slug ) . '</a>';
+		 	echo '<a href="' . admin_url( 'edit-tags.php?taxonomy=s2_tab_group&post_type=s2_simple_tabs' ) . '" class="button-secondary">' . __( 'Edit Tab Groups', $this->plugin_slug ) . '</a>';
+		 	echo '<a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a></p>';
+		}
+
+		echo '</div></div>';
+	
+	}
+
+
+} // end of class
