@@ -51,11 +51,5 @@
 	        $('.tab-content').css('border-color', to );
 	    });
 	});
-
-	wp.customize('tab_rounded',function( value ) {
-	    value.bind(function(to) {
-	        $('.s2-tab-nav li a').css('border-radius', to );
-	    });
-	});
 	
 } )( jQuery );

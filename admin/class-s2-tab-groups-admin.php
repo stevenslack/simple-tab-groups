@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name.
+ * Simple Tab Groups
  *
  * @package   S2_Tab_Groups_Admin
  * @author    Steven Slack <steven@s2webpress.com>
@@ -10,13 +10,7 @@
  */
 
 /**
- * Plugin class. This class should ideally be used to work with the
- * administrative side of the WordPress site.
- *
- * If you're interested in introducing public-facing
- * functionality, then refer to `class-s2-tab-groups.php`
- *
- * @TODO: Rename this class to a proper name for your plugin.
+ * Plugin Admin class. 
  *
  * @package S2_Tab_Groups_Admin
  * @author  Your Name <email@example.com>
@@ -52,20 +46,7 @@ class S2_Tab_Groups_Admin {
 	private function __construct() {
 
 		/*
-		 * @TODO :
-		 *
-		 * - Uncomment following lines if the admin class should only be available for super admins
-		 */
-		/* if( ! is_super_admin() ) {
-			return;
-		} */
-
-		/*
 		 * Call $plugin_slug from public plugin class.
-		 *
-		 * @TODO:
-		 *
-		 * - Rename "S2_Tab_Groups" to the name of your initial plugin class
 		 *
 		 */
 		$plugin = S2_Tab_Groups::get_instance();
@@ -82,23 +63,14 @@ class S2_Tab_Groups_Admin {
 		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_slug . '.php' );
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
-		/*
-		 * Define custom functionality.
-		 *
-		 * Read more about actions and filters:
-		 * http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
-		 */
 		// add dashicon to admin header
 		add_action( 'admin_head', array( $this, 'add_dashicon_style' ) );
-		
-		// init process for button control
-		// add_action( 'init', array( $this, 's2_simple_tabs_shortcode_button' ) );
 
 		// Add a button next to the media uploader
-		add_action( 'media_buttons', array( $this, 'add_my_custom_button' ), 11 );
+		add_action( 'media_buttons', array( $this, 'add_tinymce_tab_button' ), 11 );
 
 		// Add Content to modal window
-		add_action( 'admin_footer',  array( $this, 'add_inline_popup_content' ) );
+		add_action( 'admin_footer',  array( $this, 'add_tab_group_modal' ) );
 
 	}
 
@@ -111,15 +83,6 @@ class S2_Tab_Groups_Admin {
 	 */
 	public static function get_instance() {
 
-		/*
-		 * @TODO :
-		 *
-		 * - Uncomment following lines if the admin class should only be available for super admins
-		 */
-		/* if( ! is_super_admin() ) {
-			return;
-		} */
-
 		// If the single instance hasn't been set, set it now.
 		if ( null == self::$instance ) {
 			self::$instance = new self;
@@ -130,10 +93,6 @@ class S2_Tab_Groups_Admin {
 
 	/**
 	 * Register and enqueue admin-specific style sheet.
-	 *
-	 * @TODO:
-	 *
-	 * - Rename "S2_Tab_Groups" to the name your plugin
 	 *
 	 * @since     1.0.0
 	 *
@@ -146,7 +105,7 @@ class S2_Tab_Groups_Admin {
 		}
 
 		$screen = get_current_screen();
-		if ( $screen->base == 'post' ) {
+		if ( $screen->base == 'post' || $this->plugin_screen_hook_suffix == $screen->id ) {
 			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), S2_Tab_Groups::VERSION );
 		}
 
@@ -154,10 +113,6 @@ class S2_Tab_Groups_Admin {
 
 	/**
 	 * Register and enqueue admin-specific JavaScript.
-	 *
-	 * @TODO:
-	 *
-	 * - Rename "S2_Tab_Groups" to the name your plugin
 	 *
 	 * @since     1.0.0
 	 *
@@ -197,11 +152,12 @@ class S2_Tab_Groups_Admin {
 		 * - Change 'manage_options' to the capability you see fit
 		 *   For reference: http://codex.wordpress.org/Roles_and_Capabilities
 		 */
-		$this->plugin_screen_hook_suffix = add_options_page(
-			__( 'Page Title', $this->plugin_slug ),
-			__( 'Menu Text', $this->plugin_slug ),
-			'manage_options',
-			$this->plugin_slug,
+		$this->plugin_screen_hook_suffix = add_submenu_page( 
+			'edit.php?post_type=s2_simple_tabs', 
+			__( 'Simple Tab Groups settings and documentation', $this->plugin_slug ),
+			__( 'Settings & Help', $this->plugin_slug ),
+			'manage_options', 
+			$this->plugin_slug, 
 			array( $this, 'display_plugin_admin_page' )
 		);
 
@@ -253,9 +209,10 @@ class S2_Tab_Groups_Admin {
 
 	/**
 	 * Adds a button next to the add media button in the TinyMCE editor
-	 * @param [type] $context [description]
+	 * 
+	 * @since    1.0.0
 	 */
-	public function add_my_custom_button() {
+	public function add_tinymce_tab_button() {
 
 		$screen = get_current_screen();
 		if ( $screen->post_type != 's2_simple_tabs' ) {
@@ -266,42 +223,50 @@ class S2_Tab_Groups_Admin {
 
 			echo $context;
 
-		}
+		} // current screen
 	}
 
-	public function add_inline_popup_content() {
+	/**
+	 * Adds a modal window for the "Add tabs" button above the TinyMCE editor
+	 */
+	public function add_tab_group_modal() {
 
 		$tab_groups = get_terms( 's2_tab_group' );
 		$count = count( $tab_groups );
+		$output = '';
 
-			echo '<div id="popup_container" style="display:none;">';
-			echo '<div class="s2-tab-modal">';
-			echo '<h2>' . __( 'Choose a tab group', $this->plugin_slug ) . '</h2>';
-			echo '<p>' . __( 'Select which group of tabs you would like to display in the post or page:', $this->plugin_slug ) . '</p>';
+			$output .= '<div id="popup_container" style="display:none;"><div class="s2-tab-modal">
+							<h2>' . __( 'Choose a tab group', $this->plugin_slug ) . '</h2>
+							<p>' . __( 'Select which group of tabs you would like to display in the post or page:', $this->plugin_slug ) . '</p>';
 
-		 if ( $count > 0 ){
-		    echo '<select id="s2-tab-select">
+		 // if there are terms in the tab groups show a select field
+		 if ( $count > 0 ) {
+
+		    $output .= '<select id="s2-tab-select">
 		    <option value="">&#45;&#45;' . __( 'Select a tab group' , $this->plugin_slug ) . '&#45;&#45;</option>
 		    <option value="[simple-tab-groups]">' . __( 'All Tabs' , $this->plugin_slug ) . '</option>';
-			foreach ( $tab_groups as $tab_group ) {
 
-				$tab_group_list .= '<option value="[simple-tab-groups group=&quot;' . $tab_group->slug .'&quot;]">' . $tab_group->name . '</option>';
-				
+			foreach ( $tab_groups as $tab_group ) {
+				$output .= '<option value="[simple-tab-groups group=&quot;' . $tab_group->slug .'&quot;]">' . $tab_group->name . '</option>';				
 			}
-		    echo $tab_group_list;
-		    echo '</select>';
-		    echo '<p><a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a></p>';
+		
+		    $output .= '</select><p>
+				<a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a></p>';
+		
 		 } else {
+
 		 	// display an insert shortcode button
-		 	echo '<div id="notice" class="tab-notice"><p>' . __( 'You have not assigned any tabs to a group.', $this->plugin_slug ) . '</p></div>';
-		 	echo '<p><a href="#" class="insert-all-tabs button-primary">' . __( 'Insert all tabs' , $this->plugin_slug ) . '</a>';
-		 	echo '<a href="' . admin_url( 'edit-tags.php?taxonomy=s2_tab_group&post_type=s2_simple_tabs' ) . '" class="button-secondary">' . __( 'Edit Tab Groups', $this->plugin_slug ) . '</a>';
-		 	echo '<a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a></p>';
+		 	$output .= '<div id="notice" class="tab-notice"><p>' . __( 'You have not assigned any tabs to a group.', $this->plugin_slug ) . '</p></div>
+		 		<p><a href="#" class="insert-all-tabs button-primary">' . __( 'Insert all tabs' , $this->plugin_slug ) . '</a>
+		 		<a href="' . admin_url( 'edit-tags.php?taxonomy=s2_tab_group&post_type=s2_simple_tabs' ) . '" class="button-secondary">' . __( 'Edit Tab Groups', $this->plugin_slug ) . '</a>
+		 		<a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a></p>';
 		}
 
-		echo '</div></div>';
+		$output .= '</div></div>';
+
+		echo $output;
 	
-	}
+	} // end add_tab_group_modal
 
 
 } // end of class

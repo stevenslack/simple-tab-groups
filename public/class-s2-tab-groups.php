@@ -10,13 +10,7 @@
  */
 
 /**
- * Plugin class. This class should ideally be used to work with the
- * public-facing side of the WordPress site.
- *
- * If you're interested in introducing administrative or dashboard
- * functionality, then refer to `class-s2-tab-groups-admin.php`
- *
- * @TODO: Rename this class to a proper name for your plugin.
+ * S2_Tab_Groups. Public side of plugin.
  *
  * @package S2_Tab_Groups
  * @author  Your Name <email@example.com>
@@ -33,7 +27,6 @@ class S2_Tab_Groups {
 	const VERSION = '1.0.0';
 
 	/**
-	 * @TODO - Rename "s2-tab-groups" to the name your your plugin
 	 *
 	 * Unique identifier for your plugin.
 	 *
@@ -71,13 +64,6 @@ class S2_Tab_Groups {
 		// Activate plugin when new blog is added
 		add_action( 'wpmu_new_blog', array( $this, 'activate_new_site' ) );
 
-		// Load public-facing style sheet and JavaScript.
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-		/* Define custom functionality.
-		 * Refer To http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
-		 */
 		// register the simple tabs post type
 		add_action( 'init', array( $this, 's2_tab_post_type' ) );
 
@@ -263,35 +249,9 @@ class S2_Tab_Groups {
 
 	}
 
-	/**
-	 * Register and enqueue public-facing style sheet.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
-		global $post;
-
-		// if( has_shortcode( $post->post_content, 'simple-tab-groups') ) {
-		//	wp_enqueue_style( $this->plugin_slug . '-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
-		// }
-		
-	}
 
 	/**
-	 * Register and enqueues public-facing JavaScript files.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_scripts() {
-		//wp_enqueue_script( $this->plugin_slug . '-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION );
-	}
-
-	/**
-	 * NOTE:  Actions are points in the execution of a page or process
-	 *        lifecycle that WordPress fires.
-	 *
-	 *        Actions:    http://codex.wordpress.org/Plugin_API#Actions
-	 *        Reference:  http://codex.wordpress.org/Plugin_API/Action_Reference
+	 * Register Post Type and Taxonomy
 	 *
 	 * @since    1.0.0
 	 */
@@ -460,7 +420,6 @@ class S2_Tab_Groups {
 		return $tabs; //Return the HTML
 
 	} // end s2 tab shortcode function
-	
 
 
 }
