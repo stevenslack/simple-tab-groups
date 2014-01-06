@@ -346,12 +346,9 @@ class S2_Tab_Customizer {
 		// get rounded corner checkbox
 		$tab_rounded = get_theme_mod( 'tab_rounded' );
 
-		// only return these styles if the page has the shortcode in the content
-		if( has_shortcode( $post->post_content, 'simple-tab-groups') || is_home() ) {
-
 	    ?>
 	    <style type="text/css" id="custom-tab-styles">
-	        #s2-tab-groups .s2-tab-nav li a { 
+	        .s2-tab-groups .s2-tab-nav li a { 
 	        	<?php if ( ! empty ( $tab_styles['tab_bg'] ) ) {
 	        		echo 'background-color: #' . $tab_styles['tab_bg'] . ';'; 
 	        	}
@@ -367,7 +364,7 @@ class S2_Tab_Customizer {
 			    
 	        	?>
 	        }
-	        #s2-tab-groups .s2-tab-nav li a.active {
+	        .s2-tab-groups .s2-tab-nav li.active a {
 	        	<?php if ( ! empty ( $tab_styles['tab_active'] ) ) {
 	        		echo 'background-color: #' . $tab_styles['tab_active'] . ';'; 
 	        	}
@@ -375,7 +372,7 @@ class S2_Tab_Customizer {
 	        		echo 'color: #' . $tab_styles['tab_active_color'] . ';';
 	        	} ?>
 	        }
-	        #s2-tab-groups .s2-tab-nav li a:hover {
+	        .s2-tab-groups .s2-tab-nav li a:hover {
 	        	<?php if ( ! empty ( $tab_styles['tab_hover_bg'] ) ) {
 	        		echo 'background-color: #' . $tab_styles['tab_hover_bg'] . ';';
 	        	}
@@ -383,7 +380,7 @@ class S2_Tab_Customizer {
 	        		echo 'color: #' . $tab_styles['tab_hover_color'] . ';';
 	        	} ?>
 	        }
-	        #s2-tab-groups .tab-content {
+	        .s2-tab-groups .tab-content {
 	        	<?php if ( ! empty ( $tab_styles['tab_content_bg'] ) ) {
 	        		echo 'background-color: #' . $tab_styles['tab_content_bg'] . ';'; 
 	        	}
@@ -396,8 +393,6 @@ class S2_Tab_Customizer {
 	        }
 	    </style>
 	    <?php
-
-		}
 	}
 
 	/**

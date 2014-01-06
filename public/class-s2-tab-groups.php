@@ -321,22 +321,17 @@ class S2_Tab_Groups {
 	
 	} // end register post type
 
-	public function s2_tab_shortcode ( $atts ) {
-		// USAGE: [simple-tab-groups group="Tab Group Name or Slug"]
-		// 
+
+	public function display_tabs( $group = '' ) {
+
+		$tab_id = rand( 0, 9999 );
+
 		wp_enqueue_style( $this->plugin_slug . '-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
 
 		/** 
 		 * Conditionally load javascript inside the shortcode handler 
 		 */
-		wp_enqueue_script( $this->plugin_slug . '-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
-		
-		// One Attribute group which the user will input the queried group with this attribute
-		extract( shortcode_atts(
-			array(
-				'group' => '',
-			), $atts )
-		);
+		wp_enqueue_script( $this->plugin_slug . '-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION, true  );
 
 		// Checks if the user has entered a tab group attribute
 		if ( term_exists( $group, 's2_tab_group') ) {
@@ -367,18 +362,28 @@ class S2_Tab_Groups {
 			);	
 		}
 
-		$the_query = new WP_Query( $args );	  
+		$tab_query = new WP_Query( $args );	  
 
 		$tabs = ''; // initialize the output variable
 
+		$tabs .= '<script type="text/javascript">
+
+				jQuery(document).ready(function($) {
+					$("#tab-group-'.$tab_id.'").tabslet({
+						animation: true,
+					});
+				});
+
+
+				</script>';
 		
-		$tabs .= '<div id="s2-tab-groups"><ul class="s2-tab-nav">';
+		$tabs .= '<div id="tab-group-' . $tab_id . '" class="s2-tab-groups"><ul class="s2-tab-nav">';
 
 			// Run the loop first to creat an unordered list of tab pages with the queried group
-			if ( $the_query->have_posts() ) :
-				while ( $the_query->have_posts() ) : $the_query->the_post();
+			if ( $tab_query->have_posts() ) :
+				while ( $tab_query->have_posts() ) : $tab_query->the_post();
 				
-			        $tabs .= sprintf( ( '<li><a href="#tab-%1$s">%2$s</a></li>' ),
+			        $tabs .= sprintf( ( '<li class="lister"><a href="#tab-%1$s">%2$s</a></li>' ),
 			        		$id = get_the_ID(),
 							$title = get_the_title()
 						);
@@ -394,8 +399,8 @@ class S2_Tab_Groups {
 			 * each tab section would stack on top of each other. Got a better idea? Let me know.
 			 */
 
-			if ( $the_query->have_posts() ) :
-				while ( $the_query->have_posts() ) : $the_query->the_post();
+			if ( $tab_query->have_posts() ) :
+				while ( $tab_query->have_posts() ) : $tab_query->the_post();
 					$tabs .= sprintf( ( '<div id="tab-%1$s" class="tab-content">%2$s' ),
 							$id = get_the_ID(),
 							apply_filters( 'the_content', get_the_content() ) // wpautop makes sure the tab content contains the formatting in the TinyMCE WYSIWYG editor									
@@ -417,9 +422,61 @@ class S2_Tab_Groups {
 
 		$tabs .= '</div>'; // end #s2-tab-groups
 
-		return $tabs; //Return the HTML
+		return $tabs;
+	}
+
+
+	public function s2_tab_shortcode ( $atts ) {
+		// USAGE: [simple-tab-groups group="Tab Group Name or Slug"]
+
+		
+		// One Attribute group which the user will input the queried group with this attribute
+		extract( shortcode_atts(
+			array(
+				'group' => '',
+			), $atts )
+		);
+
+		// enqueue scripts, styles and display the tabs
+		$tabs = $this->display_tabs( $group );
+
+		return $tabs;
+
+		//include_once 'views/public.php';
+
 
 	} // end s2 tab shortcode function
 
 
+	/**
+	 * Display tabs in function for includes in themes
+	 * @param  Group attribute for selecting which taxonomy term to display
+	 */
+	public function tab_function( $group = '' ) {
+
+		// enqueue scripts, styles and display the tabs
+		$tabs = $this->display_tabs( $group );
+
+		return $tabs;
+	}
+
+
+} // end class
+
+
+if ( ! function_exists( 'simple_tab_groups' ) ) {
+
+	function simple_tab_groups( $tab_group = '' ) {
+		$simple_tabs = S2_Tab_Groups::get_instance()->tab_function( $tab_group );
+		echo $simple_tabs;
+	}
+
 }
+
+/**
+ * 		if ( function_exists( 'simple_tab_groups' ) ) {
+ *
+ *			simple_tab_groups('group-slug');
+ *		
+ *   	} // end simple_tab_groups
+ */

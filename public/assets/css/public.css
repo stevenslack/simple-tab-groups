@@ -1,12 +1,12 @@
 /* =TABS
 ----------------------------------------------- */
 
-#s2-tab-groups
+.s2-tab-groups
 {
 	margin:2em auto;
 }
 
-#s2-tab-groups .s2-tab-nav
+.s2-tab-groups .s2-tab-nav
 {
 	list-style:none;
 	margin:0;
@@ -38,7 +38,7 @@
 	border: none;
 }
 
-.s2-tab-nav li a.active
+.s2-tab-nav li.active a
 {
 	background-color:#DBDBDB;
 	color:#6D6D6D;
