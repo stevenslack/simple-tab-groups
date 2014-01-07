@@ -295,7 +295,7 @@ class S2_Tab_Groups {
 
 		); /* end of register post type */
 
-		register_taxonomy( 's2_tab_group', 
+		register_taxonomy( 's2_tab_group',
 	    	array('s2_simple_tabs'), 
 		    	array('hierarchical' 		=> true,            
 		    			'labels' 			=> array(
@@ -322,9 +322,11 @@ class S2_Tab_Groups {
 	} // end register post type
 
 
-	public function display_tabs( $group = '' ) {
+	public function display_tabs( $group = '', $mouseevent, $animation, $autorotate, $delay ) {
 
+		// generate a random number ID for each instance of a tab group
 		$tab_id = rand( 0, 9999 );
+
 
 		wp_enqueue_style( $this->plugin_slug . '-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
 
@@ -332,6 +334,10 @@ class S2_Tab_Groups {
 		 * Conditionally load javascript inside the shortcode handler 
 		 */
 		wp_enqueue_script( $this->plugin_slug . '-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION, true  );
+		// wp_localize_script( $this->plugin_slug . '-script', 'tab_var', array(
+		// 		'tab_id' => $tab_id,
+		// 	)
+		// );
 
 		// Checks if the user has entered a tab group attribute
 		if ( term_exists( $group, 's2_tab_group') ) {
@@ -366,14 +372,17 @@ class S2_Tab_Groups {
 
 		$tabs = ''; // initialize the output variable
 
+
 		$tabs .= '<script type="text/javascript">
 
 				jQuery(document).ready(function($) {
-					$("#tab-group-'.$tab_id.'").tabslet({
-						animation: true,
+					$("#tab-group-' . $tab_id . '").tabslet({
+						mouseevent: "'.$mouseevent.'",
+			            animation:  '.$animation.',
+			            autorotate: '.$autorotate.',
+			            delay:      '.$delay.',
 					});
 				});
-
 
 				</script>';
 		
@@ -423,27 +432,30 @@ class S2_Tab_Groups {
 		$tabs .= '</div>'; // end #s2-tab-groups
 
 		return $tabs;
-	}
+
+	} // end display_tabs
 
 
 	public function s2_tab_shortcode ( $atts ) {
 		// USAGE: [simple-tab-groups group="Tab Group Name or Slug"]
-
 		
 		// One Attribute group which the user will input the queried group with this attribute
 		extract( shortcode_atts(
 			array(
-				'group' => '',
+				'group'      => '',			
+				'mouseevent' =>  'click',
+	            'animation'  =>  'true',
+	            'autorotate' =>  'false',
+	            'delay'      =>  '6000',
 			), $atts )
 		);
 
 		// enqueue scripts, styles and display the tabs
-		$tabs = $this->display_tabs( $group );
+		$tabs = $this->display_tabs( $group, $mouseevent, $animation, $autorotate, $delay );
 
 		return $tabs;
 
 		//include_once 'views/public.php';
-
 
 	} // end s2 tab shortcode function
 
@@ -455,7 +467,7 @@ class S2_Tab_Groups {
 	public function tab_function( $group = '' ) {
 
 		// enqueue scripts, styles and display the tabs
-		$tabs = $this->display_tabs( $group );
+		$tabs = $this->display_tabs( $group, $mouseevent, $animation, $autorotate, $delay );
 
 		return $tabs;
 	}
