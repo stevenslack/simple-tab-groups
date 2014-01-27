@@ -43,13 +43,11 @@ require_once( plugin_dir_path( __FILE__ ) . 'public/class-s2-tab-groups.php' );
  * Register hooks that are fired when the plugin is activated or deactivated.
  * When the plugin is deleted, the uninstall.php file is loaded.
  *
- * @TODO:
- *
- * - replace S2_Tab_Groups with the name of the class defined in
- *   `class-s2-tab-groups.php`
  */
 register_activation_hook( __FILE__, array( 'S2_Tab_Groups', 'activate' ) );
+register_activation_hook( __FILE__, 'flush_rewrite_rules', 20 );
 register_deactivation_hook( __FILE__, array( 'S2_Tab_Groups', 'deactivate' ) );
+
 
 /*
  * @TODO:
