@@ -17,7 +17,7 @@
 .s2-tab-nav li
 {
 	float:left;
-	margin:.4em .5em 0 0;
+	margin:.4em .3em 0 0;
 	padding:0;
 	list-style:none;
 }
@@ -71,4 +71,10 @@
 	display: table;
 	content: "";
 	clear: both;
+}
+
+.edit-tabs
+{
+	display:block;
+	clear:both;
 }

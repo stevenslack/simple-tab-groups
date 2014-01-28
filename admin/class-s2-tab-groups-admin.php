@@ -262,7 +262,10 @@ class S2_Tab_Groups_Admin {
 		 		<a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a></p>';
 		}
 
-		$output .= '</div></div>';
+		$output .= '<br><h3>' . __( 'More Options', $this->plugin_slug ) . '</h3>
+					<p>' . __( 'If you would like to change the behavior of your tabs you can add additional options to your shortcode. Learn more about these options on the documentation page.', $this->plugin_slug ) . '<br>
+					<a href="' . admin_url( 'edit.php?post_type=s2_simple_tabs&page=' . $this->plugin_slug ) . '" target="_blank">' . __( 'Visit the documentation page' , $this->plugin_slug ) . '</a>
+					</p></div></div>';
 
 		echo $output;
 	
