@@ -232,37 +232,46 @@ class S2_Tab_Groups_Admin {
 	public function add_tab_group_modal() {
 
 		$tab_groups = get_terms( 's2_tab_group' );
-		$count = count( $tab_groups );
+		$count  = count( $tab_groups );
 		$output = '';
 
 			$output .= '<div id="popup_container" style="display:none;"><div class="s2-tab-modal">
 							<h2>' . __( 'Choose a tab group', $this->plugin_slug ) . '</h2>
 							<p>' . __( 'Select which group of tabs you would like to display in the post or page:', $this->plugin_slug ) . '</p>';
 
-		 // if there are terms in the tab groups show a select field
-		 if ( $count > 0 ) {
+		// if there are terms in the tab groups show a select field
+		if ( $count > 0 ) {
 
 		    $output .= '<select id="s2-tab-select">
-		    <option value="">&#45;&#45;' . __( 'Select a tab group' , $this->plugin_slug ) . '&#45;&#45;</option>
-		    <option value="[simple-tab-groups]">' . __( 'All Tabs' , $this->plugin_slug ) . '</option>';
+		    <option value="">&#45;&#45;' . __( 'All Tabs' , $this->plugin_slug ) . '&#45;&#45;</option>';
 
 			foreach ( $tab_groups as $tab_group ) {
-				$output .= '<option value="[simple-tab-groups group=&quot;' . $tab_group->slug .'&quot;]">' . $tab_group->name . '</option>';				
+				$output .= '<option value="' . $tab_group->slug .'">' . $tab_group->name . '</option>';				
 			}
 		
-		    $output .= '</select><p>
-				<a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a></p>';
+		    $output .= '</select>
+		    ';
 		
-		 } else {
+		} else {
 
 		 	// display an insert shortcode button
 		 	$output .= '<div id="notice" class="tab-notice"><p>' . __( 'You have not assigned any tabs to a group.', $this->plugin_slug ) . '</p></div>
-		 		<p><a href="#" class="insert-all-tabs button-primary">' . __( 'Insert all tabs' , $this->plugin_slug ) . '</a>
-		 		<a href="' . admin_url( 'edit-tags.php?taxonomy=s2_tab_group&post_type=s2_simple_tabs' ) . '" class="button-secondary">' . __( 'Edit Tab Groups', $this->plugin_slug ) . '</a>
-		 		<a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a></p>';
+		 		<p>
+			 		<a href="' . admin_url( 'edit-tags.php?taxonomy=s2_tab_group&post_type=s2_simple_tabs' ) . '" class="button-secondary">' . __( 'Edit Tab Groups', $this->plugin_slug ) . '</a>
+			 		<a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a>
+		 		</p>';
 		}
 
-		$output .= '<br><h3>' . __( 'More Options', $this->plugin_slug ) . '</h3>
+		$output .= '<h4><a>' . __( 'More Options', $this->plugin_slug ) . '</a><span class="dashicons dashicons-arrow-down-alt2"></span></h4>
+				<p class="more-options"><input type="checkbox" class="s2-tab-animation" name="animation" value="false">' . __( ' Remove tab fade effect?', $this->plugin_slug ) . '<br>
+				   <input type="checkbox" class="s2-tab-mouseevent" name="mouseevent" value="click">' . __( ' Make tabs change on hover?', $this->plugin_slug ) . '<br>
+				   <input type="checkbox" class="s2-tab-autorotate" name="autorotate" value="false">' . __( ' Auto rotate the tabs?', $this->plugin_slug ) . '<br>'
+				    . __( 'Enter the delay between tab transitions: ', $this->plugin_slug ) . '<input type="text" class="s2-tab-delay" name="delay" value="6000">
+				</p>
+				<p>
+			    	<a id="s2-tab-insert" class="button-primary" title="Insert Tabs">' . __( 'Insert Tabs' , $this->plugin_slug ) . '</a>
+					<a id="s2-tab-cancel" class="button-secondary" onclick="tb_remove();" title="Cancel">' . __( 'Cancel' , $this->plugin_slug ) . '</a>
+				</p>
 					<p>' . __( 'If you would like to change the behavior of your tabs you can add additional options to your shortcode. Learn more about these options on the documentation page.', $this->plugin_slug ) . '<br>
 					<a href="' . admin_url( 'edit.php?post_type=s2_simple_tabs&page=' . $this->plugin_slug ) . '" target="_blank">' . __( 'Visit the documentation page' , $this->plugin_slug ) . '</a>
 					</p></div></div>';
