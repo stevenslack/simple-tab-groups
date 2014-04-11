@@ -28,7 +28,7 @@ class S2_Tab_Groups {
 
 	/**
 	 *
-	 * Unique identifier for your plugin.
+	 * Unique identifier
 	 *
 	 *
 	 * The variable name is used as the text domain when internationalizing strings
@@ -335,10 +335,7 @@ class S2_Tab_Groups {
 		 * Conditionally load javascript inside the shortcode handler 
 		 */
 		wp_enqueue_script( $this->plugin_slug . '-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION, true  );
-		// wp_localize_script( $this->plugin_slug . '-script', 'tab_var', array(
-		// 		'tab_id' => $tab_id,
-		// 	)
-		// );
+
 
 		// Checks if the user has entered a tab group attribute
 		if ( term_exists( $group, 's2_tab_group') ) {
@@ -485,11 +482,3 @@ if ( ! function_exists( 'simple_tab_groups' ) ) {
 	}
 
 }
-
-/**
- * 		if ( function_exists( 'simple_tab_groups' ) ) {
- *
- *			simple_tab_groups('group-slug');
- *		
- *   	} // end simple_tab_groups
- */

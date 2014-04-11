@@ -31,7 +31,6 @@
 {
 	background-color:#f1f1f1;
 	color:#A5A5A5;
-	border-radius:4px 4px 0 0;
 	display:block;
 	padding:.4em .8em;
 	text-decoration:none;
@@ -40,8 +39,8 @@
 
 .s2-tab-nav li.active a
 {
-	background-color:#DBDBDB;
-	color:#6D6D6D;
+	background-color:#ADADAD;
+	color:#ffffff;
 
 	transition: all 0.1s linear;
 	-moz-transition: all 0.1s linear;

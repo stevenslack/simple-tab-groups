@@ -1,6 +1,6 @@
 <?php
 /**
- * Simple Tab Groups
+ * Simple Tab Groups Widget
  *
  * @package   S2_Tab_Groups_Widget
  * @author    Steven Slack <steven@s2webpress.com>

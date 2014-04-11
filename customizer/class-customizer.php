@@ -307,27 +307,6 @@ class S2_Tab_Customizer {
 	        )
 	    );
 
-		// Display borders on tabs?
-	    $wp_customize->add_setting(
-	        'tab_rounded',
-	        array(
-				'default'              => 1,
-				'transport'            => 'postMessage'
-	        )
-	    );
- 
-	    $wp_customize->add_control(
-	            'tab_rounded',
-	            array(
-	                'label'      => __( 'Display Rounded corners on tabs?', $this->plugin_slug ),
-	                'section'    => 's2_tab_styles',
-	                'type'    	 => 'checkbox',
-	                'priority' 	 => 9,
-	            )
-	    );
-
-
-
 	} // end s2_tab_color_custom
 
 
@@ -343,9 +322,6 @@ class S2_Tab_Customizer {
 		// using this in a plugin.
 		$tab_styles = get_option( 's2_tab_styles' );
 
-		// get rounded corner checkbox
-		$tab_rounded = get_theme_mod( 'tab_rounded' );
-
 	    ?>
 	    <style type="text/css" id="custom-tab-styles">
 	        .s2-tab-groups .s2-tab-nav li a { 
@@ -355,12 +331,6 @@ class S2_Tab_Customizer {
 	        	if ( ! empty ( $tab_styles['tab_color'] ) ) {
 	        		echo 'color: #' . $tab_styles['tab_color'] . ';';
 	        	}
-
-				if( isset( $tab_rounded ) && $tab_rounded == 1 ) {
-					echo 'border-radius: 4px 4px 0 0;';
-				} else {
-					echo 'border-radius: 0;';
-				}
 			    
 	        	?>
 	        }
@@ -389,7 +359,8 @@ class S2_Tab_Customizer {
 	        	}
 	        	if ( ! empty ( $tab_styles['tab_content_border_color'] ) ) {
 	        		echo 'border-color: #' . $tab_styles['tab_content_border_color'] . ';';
-	        	} ?>
+	        	}
+				?>
 	        }
 	    </style>
 	    <?php
