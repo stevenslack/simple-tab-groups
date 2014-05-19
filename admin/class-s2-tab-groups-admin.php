@@ -219,7 +219,7 @@ class S2_Tab_Groups_Admin {
 
 			add_thickbox();
 			//append the icon
-			$context = '<a title="' . __( 'Add Tab Groups' , $this->plugin_slug ) . '" href="#TB_inline?width=auto&inlineId=popup_container" class="thickbox button add-tab-group"><span class="dashicons dashicons-category"></span>' . __( 'Add Tabs' , $this->plugin_slug ) . '</a>';
+			$context = '<a title="' . __( 'Add Tab Groups' , $this->plugin_slug ) . '" href="#TB_inline?width=auto&inlineId=s2tabs_modal" class="thickbox button add-tab-group"><span class="dashicons dashicons-category"></span>' . __( 'Add Tabs' , $this->plugin_slug ) . '</a>';
 
 			echo $context;
 
@@ -235,7 +235,7 @@ class S2_Tab_Groups_Admin {
 		$count  = count( $tab_groups );
 		$output = '';
 
-			$output .= '<div id="popup_container" style="display:none;"><div class="s2-tab-modal">
+			$output .= '<div id="s2tabs_modal" style="display:none;"><div class="s2-tab-modal">
 							<h2>' . __( 'Choose a tab group', $this->plugin_slug ) . '</h2>
 							<p>' . __( 'Select which group of tabs you would like to display in the post or page:', $this->plugin_slug ) . '</p>';
 

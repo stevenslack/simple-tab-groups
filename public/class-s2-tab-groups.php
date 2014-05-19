@@ -458,26 +458,15 @@ class S2_Tab_Groups {
 	} // end s2 tab shortcode function
 
 
-	/**
-	 * Display tabs in function for includes in themes
-	 * @param  Group attribute for selecting which taxonomy term to display
-	 */
-	public function tab_function( $group = '' ) {
-
-		// enqueue scripts, styles and display the tabs
-		$tabs = $this->display_tabs( $group, $mouseevent, $animation, $autorotate, $delay );
-
-		return $tabs;
-	}
-
-
 } // end class
 
 
 if ( ! function_exists( 'simple_tab_groups' ) ) {
 
-	function simple_tab_groups( $tab_group = '' ) {
-		$simple_tabs = S2_Tab_Groups::get_instance()->tab_function( $tab_group );
+	function simple_tab_groups( $group = '', $mouseevent = "click", $animation = "true", $autorotate = "false", $delay = 6000 ) {
+		// call display tabs and set defaults
+		$simple_tabs = S2_Tab_Groups::get_instance()->display_tabs( $group, $mouseevent, $animation, $autorotate, $delay );
+		
 		echo $simple_tabs;
 	}
 
