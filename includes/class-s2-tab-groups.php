@@ -39,7 +39,7 @@ class S2_Tab_Groups {
 	 *
 	 * @var      string
 	 */
-	protected $plugin_slug = 's2-tab-groups';
+	protected $plugin_slug = 'simple-tab-groups';
 
 	/**
 	 * Instance of this class.

@@ -17,13 +17,13 @@
 	<header>
 		<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
-		<h4><?php _e( 'Simple Tab Groups allows you to create tabs and group them together in categories or groups. 
+		<h4><?php _e( 'Simple Tab Groups allows you to create tabs and group them together in categories or groups.
 		You can display a tab group on any post or page.
-		', $this->plugin_slug ); ?></h4>
+		', 'simple-tab-groups' ); ?></h4>
 
-		
+
 	</header>
 	<section class="instructions">
-		
+
 	</section>
 </div>

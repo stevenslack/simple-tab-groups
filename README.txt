@@ -46,7 +46,7 @@ e.g.
 = Using The WordPress Dashboard =
 
 1. Navigate to the 'Add New' in the plugins dashboard
-2. Search for 's2-tab-groups'
+2. Search for 'simple-tab-groups'
 3. Click 'Install Now'
 4. Activate the plugin on the Plugin dashboard
 
