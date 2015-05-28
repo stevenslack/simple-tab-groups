@@ -1,0 +1,21 @@
+{
+  "name": "Simple Tab Groups",
+  "version": "1.0.2",
+  "homepage": "https://github.com/S2web/simple-tab-groups",
+  "authors": [
+    "Steven Slack <steven@s2webpress.com>"
+  ],
+  "description": "Packages for simple tab groups",
+  "license": "GPL-2.0+",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+
+  }
+}

@@ -1,0 +1,51 @@
+.wp_themeSkin span.mce_s2_tab_button:before {
+	content: '\f318';
+}
+
+.add-tab-group .dashicons-category {
+	padding-right: .3em;
+	padding-bottom: .2em;
+	vertical-align: middle;
+	color: #888;
+}
+
+.s2-tab-modal {
+	.dashicons-arrow-down-alt2 {
+		font-size: 16px;
+		padding-left: .2em;
+	}
+	h4 {
+		cursor: pointer;
+	}
+	.more-options {
+		display: none;
+	}
+	.button-secondary {
+		margin: 0 .4em;
+	}
+	.button-primary {
+		margin: 0 .4em 0 0;
+	}
+}
+
+#TB_window a.insert-all-tabs {
+	color: #fff;
+}
+
+.tab-notice {
+	padding: 1px 12px;
+	border: 0;
+	border-left: 4px solid #dd3d36;
+	background: #fff;
+	-webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+	p {
+		margin: .5em 0;
+		padding: 2px;
+	}
+}
+
+#TB_ajaxContent {
+	height: auto !important;
+}
+

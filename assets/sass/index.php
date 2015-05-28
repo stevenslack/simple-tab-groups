@@ -1,0 +1,1 @@
+<?php // não pode entrar
