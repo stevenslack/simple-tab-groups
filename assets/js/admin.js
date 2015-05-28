@@ -23,7 +23,7 @@
 			if( ! btnValue ) {
 				var button = "";
 			} else {
-				var button = ' button-tabs';
+				var button = ' buttons="true"';
 			};
 
 			var legacy = $( "input[name=jquery]:checked" ).val();
@@ -31,7 +31,7 @@
 			if( ! legacy ) {
 				var jqVersion = "";
 			} else {
-				var jqVersion = ' jquery';
+				var jqVersion = ' jquery="true"';
 			};
 
 			send_to_editor( '[simple-tab-groups' + group + button + jqVersion + ']' );

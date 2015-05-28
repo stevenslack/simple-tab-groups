@@ -44,6 +44,7 @@ module.exports = function(grunt) {
                     'assets/js/display.js': [
                         'bower_components/tabby/dist/js/classList.js',
                         'bower_components/tabby/dist/js/tabby.js',
+                        'assets/js/init.js'
                     ],
                 }
             }
@@ -54,6 +55,10 @@ module.exports = function(grunt) {
             sass: {
                 files: ['assets/css/*.{scss,sass}'],
                 tasks: ['sass', 'autoprefixer']
+            },
+            js: {
+                files: ['assets/js/*.js'],
+                tasks: ['uglify']
             }
         },
 

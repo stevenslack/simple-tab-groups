@@ -45,11 +45,11 @@ class Simple_Tab_Groups {
 		// registers the Tabs Custom Post Type
 		new Tab_Group_Post_Type();
 
-
-	   // S2_Profiles_Display::get_instance();
+		// the shortcode and tab display
+	    STG_Display::get_instance();
 
 		if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
-
+			// get the admin functionality
 			Tab_Group_Admin::get_instance();
 		}
 
@@ -100,6 +100,7 @@ class Simple_Tab_Groups {
 	public function load_dependencies() {
 
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-tabs-post-type.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-tabs-display.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-tabs-admin.php';
 
 	}
