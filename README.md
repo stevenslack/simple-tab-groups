@@ -1,6 +1,6 @@
 # Simple Tab Groups
 
-**Authors**            [Steven Slack](https://github.com/S2web)
+**Author**            [Steven Slack](https://github.com/S2web)
 **Contributors**       [Chris Ferdinandi](https://github.com/cferdinandi)
 **License:**           GPLv2 or later
 **License URI:**       [http://www.gnu.org/licenses/gpl-2.0.html](http://www.gnu.org/licenses/gpl-2.0.html)
@@ -59,13 +59,16 @@ If `buttons` or `jquery` are set to true it will display the buttons instead of 
 ### Display tabs using a template function
 
 You can also display tabs anywhere on your site by adding the template tag. Add the template tag like the example below:
-```
+```php
 if ( ! function_exists( 'simple_tab_groups' ) ) {
     simple_tab_groups( 'your-tab-group' );
 }
 ```
 The function also accepts the same parameters as the shortcode with one additional echo or return parameter.
-``` simple_tab_groups( $group = '', $buttons = false, $jquery = false, $echo = true ); ```
+
+```php
+simple_tab_groups( $group = '', $buttons = false, $jquery = false, $echo = true );
+```
 
 
 
