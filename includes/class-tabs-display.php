@@ -147,9 +147,10 @@ class STG_Display {
 	 * @param  object $tab_query the query object
 	 * @return string div with buttons
 	 */
-	public function standalone_buttons( $tab_query ) {
+	public function standalone_buttons( $tab_query, $jquery ) {
 
-		$output = '';
+		$output    = '';
+		$data_attr = ( $jquery !== false ) ? 'data-target' : 'data-tab';
 
 		// Run the query first to creat an unordered list of tab pages with the queried group
 		if ( $tab_query->have_posts() ) :
@@ -157,7 +158,8 @@ class STG_Display {
 			while ( $tab_query->have_posts() ) : $tab_query->the_post();
 
 				// the list element
-				$output .= sprintf( ( '<button data-tab="#tab-%1$s">%2$s</button>' ),
+				$output .= sprintf( ( '<button %1$s="#tab-%2$s">%3$s</button>' ),
+					$data_attr,
 					get_the_ID(),
 					get_the_title()
 				);
@@ -176,9 +178,10 @@ class STG_Display {
 	 * @param  object $tab_query the query object
 	 * @return string unordered list of tabs
 	 */
-	public function list_link_tabs( $tab_query ) {
+	public function list_link_tabs( $tab_query, $jquery ) {
 
-		$output = '';
+		$output    = '';
+		$data_attr = ( $jquery !== false ) ? 'data-target' : 'data-tab';
 
 		// Run the query first to creat an unordered list of tab pages with the queried group
 		if ( $tab_query->have_posts() ) :
@@ -186,7 +189,8 @@ class STG_Display {
 			while ( $tab_query->have_posts() ) : $tab_query->the_post();
 
 				// the list element
-				$output .= sprintf( ( '<li class="lister"><a href="#" data-tab="#tab-%1$s">%2$s</a></li>' ),
+				$output .= sprintf( ( '<li class="lister"><a href="#" %1$s="#tab-%2$s">%3$s</a></li>' ),
+					$data_attr,
 					get_the_ID(),
 					get_the_title()
 				);
@@ -253,9 +257,9 @@ class STG_Display {
 
 			// display the tabs in either buttons or list elements
 			if ( $buttons !== false ) {
-				$tab_select = $this->standalone_buttons( $tab_query ); // the button tabs
+				$tab_select = $this->standalone_buttons( $tab_query, $jquery ); // the button tabs
 			} else {
-				$tab_select = $this->list_link_tabs( $tab_query );     // the list tabs
+				$tab_select = $this->list_link_tabs( $tab_query, $jquery );     // the list tabs
 			}
 
 			/**
@@ -277,7 +281,6 @@ class STG_Display {
 			endif;
 
 			wp_reset_postdata(); // reset-yer-postdata
-
 
 		$tabs = sprintf( '<div id="tab-group-%1$s" class="stg-wrap">%2$s %3$s</div><!--/.stg-wrap -->',
 			$tab_id,
