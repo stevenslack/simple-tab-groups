@@ -47,15 +47,35 @@ class STG_Display {
 	 * Enqueue the scripts and styles for the Tabs Display
 	 *
 	 */
-	public function enqueue_front_end_scripts() {
+	public function enqueue_front_end_scripts( $jquery ) {
 
 		// Simple Tab Group CSS
-		wp_enqueue_style( 'simple-tab-groups-styles', S2_TABS_PATH . '/assets/css/display.css', array(), S2_TAB_VERSION );
+		wp_enqueue_style( 'stg-styles', S2_TABS_PATH . '/assets/css/display.css', array(), S2_TAB_VERSION );
 
 		// Simple Tab Group Javascript
-		// Load minified version of ClassList and Tabby
-		wp_enqueue_script( 'simple-tab-groups-script', S2_TABS_PATH . '/assets/js/display.js', array( 'jquery' ), S2_TAB_VERSION, true  );
+		// If the jquery option is set load the legacy version of tabby
+		if ( $jquery !== false ) {
 
+			// The jQuery version for legacy browsers
+			wp_enqueue_script(
+				'stg-jquery-script',
+				S2_TABS_PATH . '/assets/js/tabby-jquery.js',
+				array( 'jquery' ),
+				S2_TAB_VERSION, true
+			);
+
+		} else {
+
+			// Load minified version of ClassList and Tabby
+			wp_enqueue_script(
+				'stg-script',
+				S2_TABS_PATH . '/assets/js/display.js',
+				array( 'jquery' ),
+				S2_TAB_VERSION,
+				true
+			);
+
+		}
 	}
 
 
@@ -75,98 +95,209 @@ class STG_Display {
 	}
 
 
-	public function display_tabs( $group = '', $buttons = false, $jquery = false ) {
-
-		// generate a random number ID for each instance of a tab group
-		$tab_id = rand( 0, 9999 );
-
-		// enqueue scripts
-		$this->enqueue_front_end_scripts();
-
+	/**
+	 * The Tabs Query
+	 *
+	 * @param  string $group the slug of the taxonomy term to query for
+	 * @return object | the tab query object
+	 */
+	public function tabs_query( $group ) {
 
 		// Checks if the user has entered a tab group attribute
 		if ( term_exists( $group, 's2_tab_group') ) {
 
-			$args = array(
-			'post_type' => 's2_simple_tabs',
-			'orderby'   => 'menu_order',
-			'order'     => 'ASC',
-			'tax_query' => array(
-				'relation'  => 'AND',
-					  array(
-						'taxonomy'         => 's2_tab_group',
-						'field'            => 'slug',
-						'terms'            => $group,
-						'include_children' => false,
-						'operator'         => 'IN'
-					  ),
-				  ) // end tax query
-
+			$query_args = array(
+				'post_type' => 's2_simple_tabs',
+				'orderby'   => 'menu_order',
+				'order'     => 'ASC',
+				'tax_query' => array(
+					'relation'  => 'AND',
+						array(
+							'taxonomy'         => 's2_tab_group',
+							'field'            => 'slug',
+							'terms'            => $group,
+							'include_children' => false,
+							'operator'         => 'IN'
+						),
+			  	) // end tax query
 			);  // end $args array
 
 		// if no attribute is set return all tabs
 		} else {
-			$args = array(
+
+			$query_args = array(
 				'post_type' => 's2_simple_tabs',
 				'orderby'   => 'menu_order',
 				'order'     => 'ASC'
 			);
 		}
 
+		// Add a filter for the Query Arguments
+		$args = apply_filters( 'stg_query_args', $query_args );
+
+		// return the query object as tab_query
 		$tab_query = new WP_Query( $args );
 
-		$tabs = ''; // initialize the output variable
+		return $tab_query;
+	}
 
-		$tabs .= '<div id="tab-group-' . $tab_id . '" class="s2-tab-groups"><ul class="s2-tab-nav">';
+	/**
+	 * Standalone buttons
+	 *
+	 * @param  object $tab_query the query object
+	 * @return string div with buttons
+	 */
+	public function standalone_buttons( $tab_query ) {
 
-			// Run the loop first to creat an unordered list of tab pages with the queried group
-			if ( $tab_query->have_posts() ) :
-				while ( $tab_query->have_posts() ) : $tab_query->the_post();
+		$output = '';
 
-					$tabs .= sprintf( ( '<li class="lister"><a href="#" data-tab="#tab-%1$s">%2$s</a></li>' ),
-							$id = get_the_ID(),
-							$title = get_the_title()
-						);
+		// Run the query first to creat an unordered list of tab pages with the queried group
+		if ( $tab_query->have_posts() ) :
+			$output .= '<div class="simple-tab-groups">';
+			while ( $tab_query->have_posts() ) : $tab_query->the_post();
 
-				endwhile;
-			endif;
+				// the list element
+				$output .= sprintf( ( '<button data-tab="#tab-%1$s">%2$s</button>' ),
+					get_the_ID(),
+					get_the_title()
+				);
 
-			$tabs .= '</ul>';
+			endwhile;
+			$output .= '</div><!--/.simple-tab-groups -->';
+		endif;
+
+		return apply_filters( 'stg_button_output', $output );
+	}
+
+
+	/**
+	 * List tabs in a Unordered element
+	 *
+	 * @param  object $tab_query the query object
+	 * @return string unordered list of tabs
+	 */
+	public function list_link_tabs( $tab_query ) {
+
+		$output = '';
+
+		// Run the query first to creat an unordered list of tab pages with the queried group
+		if ( $tab_query->have_posts() ) :
+			$output .= '<ul class="simple-tab-groups">';
+			while ( $tab_query->have_posts() ) : $tab_query->the_post();
+
+				// the list element
+				$output .= sprintf( ( '<li class="lister"><a href="#" data-tab="#tab-%1$s">%2$s</a></li>' ),
+					get_the_ID(),
+					get_the_title()
+				);
+
+			endwhile;
+			$output .= '</ul><!--/.simple-tab-groups -->';
+		endif;
+
+		return apply_filters( 'stg_list_output', $output );
+	}
+
+
+	/**
+	 * The Tab Content
+	 * @param  int $tab_count [description]
+	 * @return string
+	 */
+	public function tab_content_output( $tab_count ) {
+
+		$tab_content = ''; // initialize the output variable
+		$edit_link   = ''; // set the edit link variable to an empty string
+
+		$active_class = ( $tab_count === 1 ) ? ' active' : '';
+
+		if ( current_user_can( 'edit_pages' ) ) {
+			// display an edit tab link
+			$edit_link = sprintf( '<a href="%s" class="edit-tabs">%s</a>',
+				get_edit_post_link(), // edit tab link URL
+				__( 'edit this tab', 'simple-tab-groups' )
+			);
+		} // end if current user can edit pages
+
+		$tab_content .= sprintf( '<div id="tab-%1$s" class="tab-content%2$s">%3$s %4$s</div><!--/.tab-content -->',
+			get_the_ID(),
+			$active_class,
+			apply_filters( 'the_content', get_the_content() ),
+			$edit_link
+		); // end .tab-content
+
+		return apply_filters( 'tab_content', $tab_content );
+	}
+
+
+	/**
+	 * Display Tabs
+	 *
+	 * @param  string  $group   The tab group to display
+	 * @param  boolean $buttons true to display buttons | false to display list items
+	 * @param  boolean $jquery  true to use the jquery version | false to use pure javascript
+	 * @return string           The Tabs
+	 */
+	public function display_tabs( $group = '', $buttons = false, $jquery = false ) {
+
+		// generate a random number ID for each instance of a tab group
+		$tab_id = rand( 0, 9999 );
+
+		// enqueue scripts
+		$this->enqueue_front_end_scripts( $jquery );
+
+		// Setup the Tabs Query
+		// pass the shortcode parameter / argument through the query to
+		// return the correct tab group
+		$tab_query = $this->tabs_query( $group );
+
+			// display the tabs in either buttons or list elements
+			if ( $buttons !== false ) {
+				$tab_select = $this->standalone_buttons( $tab_query ); // the button tabs
+			} else {
+				$tab_select = $this->list_link_tabs( $tab_query );     // the list tabs
+			}
 
 			/**
 			 * Run the loop a second time to return the content. It is necessary in this case
 			 * to uncouple the titles and the content to display properly. If only one query was run
-			 * each tab section would stack on top of each other. Got a better idea? Let me know.
+			 * each tab section would stack on top of each other.
 			 */
+			$tab_content = ''; // makin sure we have a variable set if there are no posts
+			$tab_count = 0;
 
 			if ( $tab_query->have_posts() ) :
 				while ( $tab_query->have_posts() ) : $tab_query->the_post();
-					$tabs .= sprintf( ( '<div id="tab-%1$s" class="tab-content">%2$s' ),
-							$id = get_the_ID(),
-							apply_filters( 'the_content', get_the_content() ) // wpautop makes sure the tab content contains the formatting in the TinyMCE WYSIWYG editor
-						);
 
-					if ( current_user_can( 'edit_pages' ) ) {
-						$edit_tab = get_edit_post_link();
-						// display an edit tab link
-						$tabs .= '<a href="'. $edit_tab .'" class="edit-tabs">'. __('edit this tab', 'simple-tab-groups' ) .'</a>';
+					$tab_count++; // increase the tab count
 
-					} // end if current user can edit pages
-
-					$tabs .= '</div>'; // end .tab-content
+					$tab_content .= $this->tab_content_output( $tab_count );
 
 				endwhile;
 			endif;
 
-			wp_reset_postdata();
+			wp_reset_postdata(); // reset-yer-postdata
 
-		$tabs .= '</div>'; // end #s2-tab-groups
+
+		$tabs = sprintf( '<div id="tab-group-%1$s" class="stg-wrap">%2$s %3$s</div><!--/.stg-wrap -->',
+			$tab_id,
+			$tab_select,
+			$tab_content
+		);
 
 		return $tabs;
 
 	} // end display_tabs
 
 
+	/**
+	 * Shortcode Attributes and Display
+	 *
+	 * USAGE: [simple-tab-groups group="Tab Group Name or Slug" buttons="boolen(true or false)" jquery="boolen(true or false)"]
+	 *
+	 * @param  array $atts shortcode attributes
+	 * @return string The Tabs
+	 */
 	public function shortcode_attributes ( $atts ) {
 		// USAGE: [simple-tab-groups group="Tab Group Name or Slug"]
 
@@ -174,8 +305,8 @@ class STG_Display {
 		$shortcode = shortcode_atts(
 			array(
 				'group'   => '',
-				'buttons' =>  false,
-				'jquery'  =>  false,
+				'buttons' => false,
+				'jquery'  => false,
 			), $atts
 		);
 
@@ -189,15 +320,3 @@ class STG_Display {
 
 
 } // end class
-
-
-if ( ! function_exists( 'simple_tab_groups' ) ) {
-
-	function simple_tab_groups( $group = '', $mouseevent = "click", $animation = "true", $autorotate = "false", $delay = 6000 ) {
-		// call display tabs and set defaults
-		$simple_tabs = STG_Display::get_instance()->display_tabs( $group, $mouseevent, $animation, $autorotate, $delay );
-
-		echo $simple_tabs;
-	}
-
-}

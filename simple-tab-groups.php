@@ -6,7 +6,7 @@
  * Plugin Name:       Simple Tab Groups
  * Plugin URI:        https://github.com/S2web/simple-tab-groups
  * Description:       Create tabs and group them together in tab groups. Display a tab group on any post or page without using opening and closing shortcode brackets. Add as many tabs as you want to a page.
- * Version:           1.0.2
+ * Version:           2.0
  * Author:            Steven Slack
  * Author URI:        http://stevenslack.com
  * Text Domain:       simple-tab-groups
@@ -83,7 +83,7 @@ class Simple_Tab_Groups {
 
 		// Plugin version
 		if ( ! defined( 'S2_TAB_VERSION' ) ) {
-			define( 'S2_TAB_VERSION', '1.0.2' );
+			define( 'S2_TAB_VERSION', '2.0' );
 		}
 
 		// the base plugin filepath
@@ -101,6 +101,7 @@ class Simple_Tab_Groups {
 
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-tabs-post-type.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-tabs-display.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/template-tags.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-tabs-admin.php';
 
 	}

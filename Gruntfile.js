@@ -46,6 +46,9 @@ module.exports = function(grunt) {
                         'bower_components/tabby/dist/js/tabby.js',
                         'assets/js/init.js'
                     ],
+                    'assets/js/tabby-jquery.js': [
+                        'bower_components/tabby-jquery/index.js'
+                    ]
                 }
             }
         },

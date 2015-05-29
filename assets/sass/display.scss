@@ -1,22 +1,35 @@
 /* =TABS
 ----------------------------------------------- */
 
-.s2-tab-groups {
+.stg-wrap {
     margin: 2em auto;
-
-    .s2-tab-nav {
-        overflow: hidden;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
 }
 
-.s2-tab-nav li {
-    float: left;
-    margin: .4em .3em 0 0;
+.simple-tab-groups {
+    display: none;
+    visibility: hidden;
+    overflow: hidden;
+
+    margin: 0;
     padding: 0;
+
     list-style: none;
+    li {
+        float: left;
+
+        margin: .4em .3em 0 0;
+        padding: 0;
+
+        list-style: none;
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+    button  {
+		margin: .4em .3em 0 0;
+		padding: .4em .8em;
+    }
+
     &:last-child {
         margin-right: 0;
     }
@@ -25,45 +38,67 @@
 
         padding: .4em .8em;
 
+        -webkit-transition: all .1s linear;
+           -moz-transition: all .1s linear;
+             -o-transition: all .1s linear;
+                transition: all .1s linear;
         text-decoration: none;
 
         color: #a5a5a5;
         border: none;
         background-color: #f1f1f1;
+        &.active {
+            color: #fff;
+            background-color: #adadad;
+        }
+        &:hover {
+            color: #4d4d4d;
+            background-color: #cfcfcf;
+        }
     }
-    &.active a {
-        -webkit-transition: all .1s linear;
-           -moz-transition: all .1s linear;
-             -o-transition: all .1s linear;
-                transition: all .1s linear;
+}
 
-        color: #fff;
-        background-color: #adadad;
-    }
-    a:hover {
-        -webkit-transition: all .1s linear;
-           -moz-transition: all .1s linear;
-             -o-transition: all .1s linear;
-                transition: all .1s linear;
+.simple-tab-groups,
+.tab-content {
+    &:before,
+    &:after {
+        display: table;
 
-        color: #4d4d4d;
-        background-color: #cfcfcf;
+        content: '';
     }
+    &:after {
+        clear: both;
+    }
+}
+
+
+.simple-tab-list a,
+.simple-tab-buttons button {
+    cursor: pointer;
 }
 
 .tab-content {
     padding: 1em;
+
     border: 1px solid #f1f1f1;
-
-    &:after {
-        display: table;
-        clear: both;
-
-        content: '';
-    }
 }
 
 .edit-tabs {
     display: block;
     clear: both;
+}
+
+.js-tabby {
+    .simple-tab-groups {
+        display: block;
+        visibility: visible;
+    }
+    .tab-content {
+        display: none;
+        visibility: hidden;
+        &.active {
+            display: block;
+            visibility: visible;
+        }
+    }
 }

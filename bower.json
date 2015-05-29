@@ -16,6 +16,5 @@
     "tests"
   ],
   "devDependencies": {
-
+    "tabby": "https://github.com/cferdinandi/tabby.git"
   }
-}
