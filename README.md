@@ -1,9 +1,9 @@
 # Simple Tab Groups
 
-**Author**            [Steven Slack](https://github.com/S2web)
-**Contributors**       [Chris Ferdinandi](https://github.com/cferdinandi)
-**License:**           GPLv2 or later
-**License URI:**       [http://www.gnu.org/licenses/gpl-2.0.html](http://www.gnu.org/licenses/gpl-2.0.html)
+* **Author**            [Steven Slack](https://github.com/S2web)
+* **Contributors**      [Chris Ferdinandi](https://github.com/cferdinandi)
+* **License:**          GPLv2 or later
+* **License URI:**      [http://www.gnu.org/licenses/gpl-2.0.html](http://www.gnu.org/licenses/gpl-2.0.html)
 
 ## Description
 
@@ -31,6 +31,8 @@ Tabs are also uncoupled from post content which makes them reusable across the s
 3. To display tabs you can either use the shortcode button or a template tag.
 
 ### Display Tabs using the shortcode button
+
+Simple Tab Groups Shortcode `['simple-tab-groups']`
 
 The shortcode button will automatically generate the shortcode for you. Click on the **Add Tabs** shortcode button while editing any post or page. The button is located next to the **Add Media** button above the text editor.
 
