@@ -94,7 +94,7 @@ class STG_Customizer {
 	            $wp_customize,
 	            's2_tab_styles[tab_bg]',
 	            array(
-	                'label'      => __( 'Tab Background', 'simple-tab-groups' ),
+	                'label'      => __( 'Tab Button Background', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 0,
 	            )
@@ -133,7 +133,6 @@ class STG_Customizer {
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
-				'transport'            => 'postMessage'
 	        )
 	    );
 
@@ -157,7 +156,6 @@ class STG_Customizer {
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
-				'transport'            => 'postMessage'
 	        )
 	    );
 
@@ -181,7 +179,6 @@ class STG_Customizer {
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
-				'transport'            => 'postMessage'
 	        )
 	    );
 
@@ -205,7 +202,6 @@ class STG_Customizer {
 				'type'                 => 'option',
 				'sanitize_callback'    => 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' => 'maybe_hash_hex_color',
-				'transport'            => 'postMessage'
 	        )
 	    );
 
@@ -298,59 +294,74 @@ class STG_Customizer {
 
 
 	/**
-	 * [print_customizer_styles description]
+	 * Print Styles to header
+	 *
 	 * @return styles in the header using wp_head
 	 */
 	public function print_customizer_styles() {
 
-		global $post;
-
-		// get the options for the tab styles. This method is used instead of the theme_mod because we are
-		// using this in a plugin.
+		// get the options for the tab styles.
 		$tab_styles = get_option( 's2_tab_styles' );
 
-	    ?>
-	    <style type="text/css" id="custom-tab-styles">
-	        .s2-tab-groups .s2-tab-nav li a {
-	        	<?php if ( ! empty ( $tab_styles['tab_bg'] ) ) {
-	        		echo 'background-color: #' . $tab_styles['tab_bg'] . ';';
-	        	}
-	        	if ( ! empty ( $tab_styles['tab_color'] ) ) {
-	        		echo 'color: #' . $tab_styles['tab_color'] . ';';
-	        	}
+		$style_wrap = '<style type="text/css" id="custom-tab-styles">%s</style>';
 
-	        	?>
-	        }
-	        .s2-tab-groups .s2-tab-nav li.active a {
-	        	<?php if ( ! empty ( $tab_styles['tab_active'] ) ) {
-	        		echo 'background-color: #' . $tab_styles['tab_active'] . ';';
-	        	}
-	        	if ( ! empty ( $tab_styles['tab_active_color'] ) ) {
-	        		echo 'color: #' . $tab_styles['tab_active_color'] . ';';
-	        	} ?>
-	        }
-	        .s2-tab-groups .s2-tab-nav li a:hover {
-	        	<?php if ( ! empty ( $tab_styles['tab_hover_bg'] ) ) {
-	        		echo 'background-color: #' . $tab_styles['tab_hover_bg'] . ';';
-	        	}
-	        	if ( ! empty ( $tab_styles['tab_hover_color'] ) ) {
-	        		echo 'color: #' . $tab_styles['tab_hover_color'] . ';';
-	        	} ?>
-	        }
-	        .s2-tab-groups .tab-content {
-	        	<?php if ( ! empty ( $tab_styles['tab_content_bg'] ) ) {
-	        		echo 'background-color: #' . $tab_styles['tab_content_bg'] . ';';
-	        	}
-	        	if ( ! empty ( $tab_styles['tab_content_color'] ) ) {
-	        		echo 'color: #' . $tab_styles['tab_content_color'] . ';';
-	        	}
-	        	if ( ! empty ( $tab_styles['tab_content_border_color'] ) ) {
-	        		echo 'border-color: #' . $tab_styles['tab_content_border_color'] . ';';
-	        	}
-				?>
-	        }
-	    </style>
-	    <?php
+		$initial_styles = '';
+		$active_styles  = '';
+		$hover_styles   = '';
+		$tab_content    = '';
+
+		// set the tab color and background variables
+		$tab_color = ( ! empty( $tab_styles['tab_color'] ) ) ? sprintf( 'color:#%s;', $tab_styles['tab_color'] ) : '';
+		$tab_bg    = ( ! empty( $tab_styles['tab_bg'] ) ) ? sprintf( 'background-color:#%s;', $tab_styles['tab_bg'] ) : '';
+
+		if ( ! empty( $tab_styles['tab_bg'] ) || ! empty( $tab_styles['tab_color'] ) ) {
+			$initial_styles = sprintf( '.stg-wrap .simple-tab-groups a,.stg-wrap .simple-tab-groups button {%s%s}',
+				$tab_bg,
+				$tab_color
+			);
+		}
+
+		// set the tab color and background variables
+		$tab_active_color = ( ! empty( $tab_styles['tab_active_color'] ) ) ? sprintf( 'color:#%s;', $tab_styles['tab_active_color'] ) : '';
+		$tab_active_bg    = ( ! empty( $tab_styles['tab_active'] ) ) ? sprintf( 'background-color:#%s;', $tab_styles['tab_active'] ) : '';
+
+		if ( ! empty( $tab_styles['tab_active_bg'] ) || ! empty( $tab_styles['tab_active_color'] ) ) {
+			$active_styles = sprintf( '.stg-wrap .simple-tab-groups li.active a,.stg-wrap .simple-tab-groups button.active {%s%s}',
+				$tab_active_bg,
+				$tab_active_color
+			);
+		}
+
+		// set the tab color and background variables
+		$tab_hover       = ( ! empty( $tab_styles['tab_hover_color'] ) ) ? sprintf( 'color:#%s;', $tab_styles['tab_hover_color'] ) : '';
+		$tab_hover_color = ( ! empty( $tab_styles['tab_hover_bg'] ) ) ? sprintf( 'background-color:#%s;', $tab_styles['tab_hover_bg'] ) : '';
+
+		if ( ! empty( $tab_styles['tab_hover_bg'] ) || ! empty( $tab_styles['tab_hover_color'] ) ) {
+			$hover_styles = sprintf( '.stg-wrap .simple-tab-groups li a:hover,.stg-wrap .simple-tab-groups button:hover {%s%s}',
+				$tab_hover_color,
+				$tab_hover
+			);
+		}
+
+		// set the tab color and background variables
+		$tab_content_bg     = ( ! empty( $tab_styles['tab_content_color'] ) ) ? sprintf( 'color:#%s;', $tab_styles['tab_content_color'] ) : '';
+		$tab_content_color  = ( ! empty( $tab_styles['tab_content_bg'] ) ) ? sprintf( 'background-color:#%s;', $tab_styles['tab_content_bg'] ) : '';
+		$tab_content_border = ( ! empty( $tab_styles['tab_content_border_color'] ) ) ? sprintf( 'border-color:#%s;', $tab_styles['tab_content_border_color'] ) : '';
+
+		if ( ! empty( $tab_styles['tab_content_bg'] ) || ! empty( $tab_styles['tab_content_color'] ) || ! empty( $tab_styles['tab_content_border_color'] ) ) {
+			$tab_content = sprintf( '.stg-wrap .tab-content {%s%s%s}',
+				$tab_content_color,
+				$tab_content_bg,
+				$tab_content_border
+			);
+		}
+
+		$properties = $initial_styles . $active_styles . $hover_styles . $tab_content;
+
+		if ( $tab_styles['tab_color'] || $tab_styles['tab_bg'] ) {
+			echo sprintf( $style_wrap, $properties );
+		}
+
 	}
 
 	/**
@@ -359,7 +370,7 @@ class STG_Customizer {
 	 */
 	public function enqueue_customizer_scripts() {
 
-		wp_enqueue_script( 'simple-tab-groups-customizer-script', S2_TABS_PATH . 'includes/customizer/js/customizer.js', array( 'jquery', 'customize-preview' ), S2_TAB_VERSION, true );
+		wp_enqueue_script( 'simple-tab-groups-customizer-script', S2_TABS_PATH . '/includes/customizer/js/customizer.js', array( 'jquery', 'customize-preview' ), S2_TAB_VERSION, true );
 
 	} // STG_Customizer_preview
 
