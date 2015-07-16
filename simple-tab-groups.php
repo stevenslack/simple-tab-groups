@@ -47,6 +47,7 @@ class Simple_Tab_Groups {
 
 		// the shortcode and tab display
 	    STG_Display::get_instance();
+	    STG_Customizer::get_instance();
 
 		if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 			// get the admin functionality
@@ -103,6 +104,7 @@ class Simple_Tab_Groups {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-tabs-display.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/template-tags.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-tabs-admin.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/customizer/class-customizer.php';
 
 	}
 

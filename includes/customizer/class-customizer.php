@@ -2,7 +2,7 @@
 /**
  * Simple Tab Groups.
  *
- * @package   S2_Tab_Customizer
+ * @package   STG_Customizer
  * @author    Steven Slack <steven@s2webpress.com>
  * @license   GPL-2.0+
  * @link      http://s2webpress.com
@@ -11,14 +11,14 @@
 
 
 /**
- * S2_Tab_Customizer. This class handles the style of the tabs using the theme customizer.
+ * STG_Customizer. This class handles the style of the tabs using the theme customizer.
  *
- * @package S2_Tab_Customizer
+ * @package STG_Customizer
  * @author  Steven Slack <steven@s2webpress.com>
  */
 
 
-class S2_Tab_Customizer {
+class STG_Customizer {
 
 	/**
 	 * Instance of this class.
@@ -30,31 +30,18 @@ class S2_Tab_Customizer {
 	protected static $instance = null;
 
 	/**
-	 * Slug of the plugin screen.
-	 *
-	 * @since    1.0.0
-	 *
-	 * @var      string
-	 */
-	protected $plugin_screen_hook_suffix = null;
-
-	/**
 	 * Register the theme customizer and theme customizer preview scripts and styles
 	 *
 	 * @since     1.0.0
 	 */
 	private function __construct() {
 
-
-		$plugin = S2_Tab_Groups::get_instance();
-		$this->plugin_slug = $plugin->get_plugin_slug();
-		
 		// register the customizer function
-	    add_action( 'customize_register', array( $this, 's2_tab_color_custom' ), 50 );
+	    add_action( 'customize_register', array( $this, 'register_tab_colors' ), 50 );
 
-		add_action( 'customize_preview_init', array( $this, 's2_tab_customizer_preview_js' ) );
+		add_action( 'customize_preview_init', array( $this, 'enqueue_customizer_scripts' ) );
 
-		add_action( 'wp_head', array( $this, 's2_tab_customizer_styles') );
+		add_action( 'wp_head', array( $this, 'print_customizer_styles') );
 
 	}
 
@@ -79,17 +66,17 @@ class S2_Tab_Customizer {
 	/**
 	 * Custom Tab Colors and styles using the Wordpress Customizer
 	 */
-	public function s2_tab_color_custom( $wp_customize ) {
-		
+	public function register_tab_colors( $wp_customize ) {
+
 	    $wp_customize->add_section(
 	        's2_tab_styles',
 	        array(
-	            'title' 			=> __( 'Tab Styles', $this->plugin_slug ),
-	            'description' 		=> __( 'Change the color and settings of your tabs to match your theme.', $this->plugin_slug ),
+	            'title' 			=> __( 'Tab Styles', 'simple-tab-groups' ),
+	            'description' 		=> __( 'Change the color and settings of your tabs to match your theme.', 'simple-tab-groups' ),
 	            'priority' 			=> 300,
 	        )
 	    );
-		
+
 		// Tab Background Color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_bg]',
@@ -101,20 +88,20 @@ class S2_Tab_Customizer {
 				'transport'            => 'postMessage'
 	        )
 	    );
- 
+
 	    $wp_customize->add_control(
 	        new WP_Customize_Color_Control(
 	            $wp_customize,
 	            's2_tab_styles[tab_bg]',
 	            array(
-	                'label'      => __( 'Tab Background', $this->plugin_slug ),
+	                'label'      => __( 'Tab Background', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 0,
 	            )
 	        )
 	    );
-		
-		// Tab text color																														
+
+		// Tab text color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_color]',
 	        array(
@@ -125,19 +112,19 @@ class S2_Tab_Customizer {
 				'transport'            => 'postMessage'
 	        )
 	    );
- 
+
 	    $wp_customize->add_control(
 	        new WP_Customize_Color_Control(
 	            $wp_customize,
 	            's2_tab_styles[tab_color]',
 	            array(
-	                'label'      => __( 'Tab text color', $this->plugin_slug ),
+	                'label'      => __( 'Tab text color', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 1,
 	            )
 	        )
 	    );
-		
+
 		// Tab active state background color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_active]',
@@ -149,19 +136,19 @@ class S2_Tab_Customizer {
 				'transport'            => 'postMessage'
 	        )
 	    );
- 
+
 	    $wp_customize->add_control(
 	        new WP_Customize_Color_Control(
 	            $wp_customize,
 	            's2_tab_styles[tab_active]',
 	            array(
-	                'label'      => __( 'Active tab background', $this->plugin_slug ),
+	                'label'      => __( 'Active tab background', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 2,
 	            )
 	        )
 	    );
-		
+
 		// Tab active state text color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_active_color]',
@@ -173,19 +160,19 @@ class S2_Tab_Customizer {
 				'transport'            => 'postMessage'
 	        )
 	    );
- 
+
 	    $wp_customize->add_control(
 	        new WP_Customize_Color_Control(
 	            $wp_customize,
 	            's2_tab_styles[tab_active_color]',
 	            array(
-	                'label'      => __( 'Active tab text color', $this->plugin_slug ),
+	                'label'      => __( 'Active tab text color', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 3,
 	            )
 	        )
 	    );
-		
+
 		// Tab hover state background color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_hover_bg]',
@@ -197,19 +184,19 @@ class S2_Tab_Customizer {
 				'transport'            => 'postMessage'
 	        )
 	    );
- 
+
 	    $wp_customize->add_control(
 	        new WP_Customize_Color_Control(
 	            $wp_customize,
 	            's2_tab_styles[tab_hover_bg]',
 	            array(
-	                'label'      => __( 'Tab hover background', $this->plugin_slug ),
+	                'label'      => __( 'Tab hover background', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 4,
 	            )
 	        )
 	    );
-		
+
 		// Tab hover state text color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_hover_color]',
@@ -221,19 +208,19 @@ class S2_Tab_Customizer {
 				'transport'            => 'postMessage'
 	        )
 	    );
- 
+
 	    $wp_customize->add_control(
 	        new WP_Customize_Color_Control(
 	            $wp_customize,
 	            's2_tab_styles[tab_hover_color]',
 	            array(
-	                'label'      => __( 'Tab hover text color', $this->plugin_slug ),
+	                'label'      => __( 'Tab hover text color', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 5,
 	            )
 	        )
 	    );
-		
+
 		// Tab content background color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_content_bg]',
@@ -245,19 +232,19 @@ class S2_Tab_Customizer {
 				'transport'            => 'postMessage'
 	        )
 	    );
- 
+
 	    $wp_customize->add_control(
 	        new WP_Customize_Color_Control(
 	            $wp_customize,
 	            's2_tab_styles[tab_content_bg]',
 	            array(
-	                'label'      => __( 'Tab content background color', $this->plugin_slug ),
+	                'label'      => __( 'Tab content background color', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 6,
 	            )
 	        )
 	    );
-		
+
 		// Tab Content text color
 	    $wp_customize->add_setting(
 	        's2_tab_styles[tab_content_color]',
@@ -269,13 +256,13 @@ class S2_Tab_Customizer {
 				'transport'            => 'postMessage'
 	        )
 	    );
- 
+
 	    $wp_customize->add_control(
 	        new WP_Customize_Color_Control(
 	            $wp_customize,
 	            's2_tab_styles[tab_content_color]',
 	            array(
-	                'label'      => __( 'Tab content text color', $this->plugin_slug ),
+	                'label'      => __( 'Tab content text color', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 7,
 	            )
@@ -293,50 +280,50 @@ class S2_Tab_Customizer {
 				'transport'            => 'postMessage'
 	        )
 	    );
- 
- 		
+
+
 	    $wp_customize->add_control(
 	        new WP_Customize_Color_Control(
 	            $wp_customize,
 	            's2_tab_styles[tab_content_border_color]',
 	            array(
-	                'label'      => __( 'Tab content area border color', $this->plugin_slug ),
+	                'label'      => __( 'Tab content area border color', 'simple-tab-groups' ),
 	                'section'    => 's2_tab_styles',
 	                'priority' 	 => 8,
 	            )
 	        )
 	    );
 
-	} // end s2_tab_color_custom
+	} // end register_tab_colors
 
 
 	/**
-	 * [s2_tab_customizer_styles description]
+	 * [print_customizer_styles description]
 	 * @return styles in the header using wp_head
 	 */
-	public function s2_tab_customizer_styles() {
+	public function print_customizer_styles() {
 
 		global $post;
 
-		// get the options for the tab styles. This method is used instead of the theme_mod because we are 
+		// get the options for the tab styles. This method is used instead of the theme_mod because we are
 		// using this in a plugin.
 		$tab_styles = get_option( 's2_tab_styles' );
 
 	    ?>
 	    <style type="text/css" id="custom-tab-styles">
-	        .s2-tab-groups .s2-tab-nav li a { 
+	        .s2-tab-groups .s2-tab-nav li a {
 	        	<?php if ( ! empty ( $tab_styles['tab_bg'] ) ) {
-	        		echo 'background-color: #' . $tab_styles['tab_bg'] . ';'; 
+	        		echo 'background-color: #' . $tab_styles['tab_bg'] . ';';
 	        	}
 	        	if ( ! empty ( $tab_styles['tab_color'] ) ) {
 	        		echo 'color: #' . $tab_styles['tab_color'] . ';';
 	        	}
-			    
+
 	        	?>
 	        }
 	        .s2-tab-groups .s2-tab-nav li.active a {
 	        	<?php if ( ! empty ( $tab_styles['tab_active'] ) ) {
-	        		echo 'background-color: #' . $tab_styles['tab_active'] . ';'; 
+	        		echo 'background-color: #' . $tab_styles['tab_active'] . ';';
 	        	}
 	        	if ( ! empty ( $tab_styles['tab_active_color'] ) ) {
 	        		echo 'color: #' . $tab_styles['tab_active_color'] . ';';
@@ -352,7 +339,7 @@ class S2_Tab_Customizer {
 	        }
 	        .s2-tab-groups .tab-content {
 	        	<?php if ( ! empty ( $tab_styles['tab_content_bg'] ) ) {
-	        		echo 'background-color: #' . $tab_styles['tab_content_bg'] . ';'; 
+	        		echo 'background-color: #' . $tab_styles['tab_content_bg'] . ';';
 	        	}
 	        	if ( ! empty ( $tab_styles['tab_content_color'] ) ) {
 	        		echo 'color: #' . $tab_styles['tab_content_color'] . ';';
@@ -367,14 +354,14 @@ class S2_Tab_Customizer {
 	}
 
 	/**
-	 * [s2_tab_customizer_preview_js description]
+	 * [enqueue_customizer_scripts description]
 	 * @return [type] [description]
 	 */
-	public function s2_tab_customizer_preview_js() {
+	public function enqueue_customizer_scripts() {
 
-		wp_enqueue_script( $this->plugin_slug . '-customizer-script', plugins_url( 'js/customizer.js', __FILE__ ), array( 'jquery', 'customize-preview' ), S2_Tab_Groups::VERSION, true );
+		wp_enqueue_script( 'simple-tab-groups-customizer-script', S2_TABS_PATH . 'includes/customizer/js/customizer.js', array( 'jquery', 'customize-preview' ), S2_TAB_VERSION, true );
 
-	} // s2_tab_customizer_preview
+	} // STG_Customizer_preview
 
 }
 
@@ -382,5 +369,5 @@ class S2_Tab_Customizer {
 
 
 
-    
+
 
