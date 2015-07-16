@@ -84,7 +84,7 @@ class Simple_Tab_Groups {
 
 		// Plugin version
 		if ( ! defined( 'S2_TAB_VERSION' ) ) {
-			define( 'S2_TAB_VERSION', '2.0' );
+			define( 'S2_TAB_VERSION', '2.1' );
 		}
 
 		// the base plugin filepath
