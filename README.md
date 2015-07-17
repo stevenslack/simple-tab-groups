@@ -71,6 +71,19 @@ The function also accepts the same parameters as the shortcode with one addition
 ```php
 simple_tab_groups( $group = '', $buttons = false, $jquery = false, $echo = true );
 ```
+### Customize the tab background and text colors.
+
+Use the WordPress customizer to change the appearance of the tabs. You can change the following styles by going to the customizer and opening the setting titled "Tab Styles".
+
+* Tab Button Background
+* Tab text color
+* Active tab background
+* Active tab text color
+* Tab hover background
+* Tab hover text color
+* Tab content background color
+* Tab content text color
+* Tab content area border color
 
 
 
