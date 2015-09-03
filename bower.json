@@ -1,6 +1,5 @@
 {
   "name": "Simple Tab Groups",
-  "version": "1.0.2",
   "homepage": "https://github.com/S2web/simple-tab-groups",
   "authors": [
     "Steven Slack <steven@s2webpress.com>"
@@ -18,3 +17,4 @@
   "devDependencies": {
     "tabby": "https://github.com/cferdinandi/tabby.git"
   }
+}
